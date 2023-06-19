@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 
 // UTC time is Belgian time - 2
 // GET from BE
@@ -843,6 +843,12 @@ function App() {
   const weeksCount = Object.keys(schedule).length;
   const daysCount = Object.keys(schedule[0].days).length;
   const stagesCount = Object.keys(schedule[0].days[0].stages).length;
+
+  useEffect(() => {
+    fetch("https://walrus-app-9mwix.ondigitalocean.app/api/schedule")
+      .then((response) => response.json())
+      .then((data) => console.log(data));
+  }, []);
 
   const stageSchedule =
     schedule[currentWeek].days[currentDay].stages[currentStage].artists;
