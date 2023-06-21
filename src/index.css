@@ -1,4 +1,81 @@
+:root {
+  --black: #000000;
+  --white: #ffffff;
+  --font-size-base: 8px;
+}
+
 * {
   margin: 0;
   padding: 0;
+  border: 0;
+  color: var(--white);
+}
+
+body {
+  background-color: var(--black);
+  font-size: calc(var(--font-size-base) * 3);
+  line-height: calc(var(--font-size-base) * 3);
+  min-width: 320px;
+  max-width: 1264px; /* as recommended by https://uxdesign.cc/responsive-layout-grid-guide-for-designers-c3ba7d161bdf */
+  margin: 0 auto;
+}
+
+@media (min-width: 0px) and (max-width: 320px) {
+  body {
+    padding: 0 calc(var(--font-size-base) * 1);
+  }
+}
+
+@media (min-width: 321px) and (max-width: 655px) {
+  body {
+    padding: 0 calc(var(--font-size-base) * 2);
+  }
+}
+
+@media (min-width: 656px) and (max-width: 1023px) {
+  body {
+    padding: 0 calc(var(--font-size-base) * 5);
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1392px) {
+  body {
+    padding: 0 calc(var(--font-size-base) * 8);
+  }
+}
+
+#top-buttons {
+  margin-top: calc(var(--font-size-base) * 2);
+  height: calc(var(--font-size-base) * 11);
+  display: flex;
+}
+
+.top-button-container {
+  flex-basis: 33.3%;
+  text-align: center;
+}
+
+.top-button-container > button {
+  width: calc(var(--font-size-base) * 6);
+  height: calc(var(--font-size-base) * 6);
+  border-radius: 100%;
+  background-color: var(--black);
+  border: 1px solid var(--white);
+  cursor: pointer;
+}
+
+.top-button-container > button > img {
+  width: calc(var(--font-size-base) * 3);
+  height: calc(var(--font-size-base) * 3);
+}
+
+#donate {
+  background-color: #ff0000;
+  border: #ff0000;
+}
+
+.top-button-description {
+  margin-top: calc(var(--font-size-base) * 1);
+  font-size: calc(var(--font-size-base) * 2);
+  line-height: calc(var(--font-size-base) * 2);
 }

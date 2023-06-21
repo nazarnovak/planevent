@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 // UTC time is Belgian time - 2
 // GET from BE
@@ -844,11 +844,11 @@ function App() {
   const daysCount = Object.keys(schedule[0].days).length;
   const stagesCount = Object.keys(schedule[0].days[0].stages).length;
 
-  useEffect(() => {
-    fetch("https://walrus-app-9mwix.ondigitalocean.app/api/schedule")
-      .then((response) => response.json())
-      .then((data) => console.log(data));
-  }, []);
+  //   useEffect(() => {
+  //     fetch("https://walrus-app-9mwix.ondigitalocean.app/api/schedule")
+  //       .then((response) => response.json())
+  //       .then((data) => console.log(data));
+  //   }, []);
 
   const stageSchedule =
     schedule[currentWeek].days[currentDay].stages[currentStage].artists;
@@ -890,42 +890,68 @@ function App() {
 
   return (
     <div>
+      <div id="top-buttons">
+        <div className="top-button-container">
+          <button id="move-schedule">
+            <img src="/device.png" alt="Move schedule to a different device" />
+          </button>
+          <div className="top-button-description">
+            Move schedule to a different device
+          </div>
+        </div>
+        <div className="top-button-container">
+          <button id="share-schedule">
+            <img src="/share.png" alt="Share schedule with others" />
+          </button>
+          <div className="top-button-description">
+            Share schedule with others
+          </div>
+        </div>
+        <div className="top-button-container">
+          <button id="donate">
+            <img src="/heart.png" alt="Donate" />
+          </button>
+          <div className="top-button-description">Donate</div>
+        </div>
+      </div>
       {/* Week > Day > Stage selector  */}
-      {currentWeek > 0 && (
-        <a onClick={() => changeWeek(currentWeek - 1)}>&lt;</a>
-      )}{" "}
-      <span
-        style={{ display: "inline-block", width: "90px", padding: "0 10px" }}
-      >
-        {schedule[currentWeek].weekName}
-      </span>{" "}
-      {currentWeek < weeksCount - 1 && (
-        <a onClick={() => changeWeek(currentWeek + 1)}>&gt;</a>
-      )}
-      <br />
-      {currentDay > 0 && (
-        <a onClick={() => changeDay(currentDay - 1)}>&lt;</a>
-      )}{" "}
-      <span
-        style={{ display: "inline-block", width: "90px", padding: "0 10px" }}
-      >
-        {schedule[currentWeek].days[currentDay].weekDay}
-      </span>{" "}
-      {currentDay < daysCount - 1 && (
-        <a onClick={() => changeDay(currentDay + 1)}>&gt;</a>
-      )}
-      <br />
-      {currentStage > 0 && (
-        <a onClick={() => changeStage(currentStage - 1)}>&lt;</a>
-      )}{" "}
-      <span
-        style={{ display: "inline-block", width: "90px", padding: "0 10px" }}
-      >
-        {schedule[currentWeek].days[currentDay].stages[currentStage].stage}
-      </span>{" "}
-      {currentStage < stagesCount - 1 && (
-        <a onClick={() => changeStage(currentStage + 1)}>&gt;</a>
-      )}
+      <div>
+        {currentWeek > 0 && (
+          <span onClick={() => changeWeek(currentWeek - 1)}>&lt;</span>
+        )}{" "}
+        <span
+          style={{ display: "inline-block", width: "90px", padding: "0 10px" }}
+        >
+          {schedule[currentWeek].weekName}
+        </span>{" "}
+        {currentWeek < weeksCount - 1 && (
+          <span onClick={() => changeWeek(currentWeek + 1)}>&gt;</span>
+        )}
+        <br />
+        {currentDay > 0 && (
+          <span onClick={() => changeDay(currentDay - 1)}>&lt;</span>
+        )}{" "}
+        <span
+          style={{ display: "inline-block", width: "90px", padding: "0 10px" }}
+        >
+          {schedule[currentWeek].days[currentDay].weekDay}
+        </span>{" "}
+        {currentDay < daysCount - 1 && (
+          <span onClick={() => changeDay(currentDay + 1)}>&gt;</span>
+        )}
+        <br />
+        {currentStage > 0 && (
+          <span onClick={() => changeStage(currentStage - 1)}>&lt;</span>
+        )}{" "}
+        <span
+          style={{ display: "inline-block", width: "90px", padding: "0 10px" }}
+        >
+          {schedule[currentWeek].days[currentDay].stages[currentStage].stage}
+        </span>{" "}
+        {currentStage < stagesCount - 1 && (
+          <span onClick={() => changeStage(currentStage + 1)}>&gt;</span>
+        )}
+      </div>
       {/* Current stage schedule  */}
       <div>
         {stageSchedule.map((slot, i) => {
