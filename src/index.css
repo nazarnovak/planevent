@@ -44,10 +44,15 @@ body {
   }
 }
 
-#top-buttons {
+#top-buttons-container {
   margin-top: calc(var(--font-size-base) * 2);
-  height: calc(var(--font-size-base) * 11);
+  position: relative;
+}
+
+#top-buttons {
+  position: relative;
   display: flex;
+  z-index: 1;
 }
 
 .top-button-container {
@@ -78,4 +83,28 @@ body {
   margin-top: calc(var(--font-size-base) * 1);
   font-size: calc(var(--font-size-base) * 2);
   line-height: calc(var(--font-size-base) * 2);
+}
+
+#share-buttons-overlay {
+  z-index: 2;
+  position: absolute;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+}
+
+.tinted {
+  opacity: 0.3;
+}
+
+.flex {
+  display: flex;
+}
+
+.hidden {
+  display: none;
+}
+
+#date-stage-selector {
+  margin-top: calc(var(--font-size-base) * 2);
 }

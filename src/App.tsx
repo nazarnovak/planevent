@@ -836,6 +836,8 @@ const schedule = [
 ];
 
 function App() {
+  const [shareOverlayVisible, setShareOverlayVisible] = useState(false);
+
   const [currentWeek, setCurrentWeek] = useState(0);
   const [currentDay, setCurrentDay] = useState(0);
   const [currentStage, setCurrentStage] = useState(0);
@@ -888,34 +890,60 @@ function App() {
   //   </div>
   // )
 
+  const openShareOverlay = () => {
+    setShareOverlayVisible(true);
+  };
+
+  const closeShareOverlay = () => {
+    setShareOverlayVisible(false);
+  };
+
   return (
     <div>
-      <div id="top-buttons">
-        <div className="top-button-container">
-          <button id="move-schedule">
-            <img src="/device.png" alt="Move schedule to a different device" />
-          </button>
-          <div className="top-button-description">
-            Move schedule to a different device
+      <div id="top-buttons-container">
+        <div
+          id="share-buttons-overlay"
+          className={shareOverlayVisible ? "flex" : "hidden"}
+        >
+          <div className="top-button-container">
+            <button id="share" onClick={closeShareOverlay}></button>
+            <div className="top-button-description">Share</div>
+          </div>
+          <div className="top-button-container">
+            <button id="donate"></button>
+            <div className="top-button-description">Donate</div>
           </div>
         </div>
-        <div className="top-button-container">
-          <button id="share-schedule">
-            <img src="/share.png" alt="Share schedule with others" />
-          </button>
-          <div className="top-button-description">
-            Share schedule with others
+        <div id="top-buttons" className={shareOverlayVisible ? "tinted" : ""}>
+          <div className="top-button-container">
+            <button id="move-schedule">
+              <img
+                src="/device.png"
+                alt="Move schedule to a different device"
+              />
+            </button>
+            <div className="top-button-description">
+              Move schedule to a different device
+            </div>
           </div>
-        </div>
-        <div className="top-button-container">
-          <button id="donate">
-            <img src="/heart.png" alt="Donate" />
-          </button>
-          <div className="top-button-description">Donate</div>
+          <div className="top-button-container">
+            <button id="share-schedule" onClick={openShareOverlay}>
+              <img src="/share.png" alt="Share schedule with others" />
+            </button>
+            <div className="top-button-description">
+              Share schedule with others
+            </div>
+          </div>
+          <div className="top-button-container">
+            <button id="donate">
+              <img src="/heart.png" alt="Donate" />
+            </button>
+            <div className="top-button-description">Donate</div>
+          </div>
         </div>
       </div>
       {/* Week > Day > Stage selector  */}
-      <div>
+      <div id="date-stage-selector">
         {currentWeek > 0 && (
           <span onClick={() => changeWeek(currentWeek - 1)}>&lt;</span>
         )}{" "}
