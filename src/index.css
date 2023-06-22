@@ -79,6 +79,10 @@ body {
   border: #ff0000;
 }
 
+#donate > img {
+  margin-top: 4px; /* Fixes the heart being centered on the button */
+}
+
 .top-button-description {
   margin-top: calc(var(--font-size-base) * 1);
   font-size: calc(var(--font-size-base) * 2);
@@ -113,6 +117,15 @@ h1 {
   text-align: center;
 }
 
+.week-day-stage-item {
+  text-align: center;
+  border: 1px solid var(--white);
+  border-radius: calc(var(--font-size-base) * 1);
+  font-size: calc(var(--font-size-base) * 3);
+  line-height: calc(var(--font-size-base) * 3);
+  cursor: pointer;
+}
+
 #week-selector {
   display: flex;
   justify-content: space-between;
@@ -122,17 +135,13 @@ h1 {
 
 .week {
   flex-basis: 40%;
-  text-align: center;
-  border: 1px solid var(--white);
-  border-radius: calc(var(--font-size-base) * 1);
-  font-size: calc(var(--font-size-base) * 3);
-  line-height: calc(var(--font-size-base) * 3);
   padding: calc(var(--font-size-base) * 2);
 }
 
 .active {
   background-color: var(--white);
   color: var(--black);
+  cursor: default;
 }
 
 #day-selector {
@@ -144,11 +153,6 @@ h1 {
 
 .day {
   flex-basis: 30%;
-  text-align: center;
-  border: 1px solid var(--white);
-  border-radius: calc(var(--font-size-base) * 1);
-  font-size: calc(var(--font-size-base) * 3);
-  line-height: calc(var(--font-size-base) * 3);
   padding: calc(var(--font-size-base) * 2) calc(var(--font-size-base) * 1);
 }
 
@@ -161,10 +165,6 @@ h1 {
 
 .stage-item {
   text-align: center;
-  border: 1px solid var(--white);
-  border-radius: calc(var(--font-size-base) * 1);
-  font-size: calc(var(--font-size-base) * 3);
-  line-height: calc(var(--font-size-base) * 3);
   padding: calc(var(--font-size-base) * 2) calc(var(--font-size-base) * 1);
 }
 

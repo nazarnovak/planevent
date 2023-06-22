@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // UTC time is Belgian time - 2
 // GET from BE
@@ -846,11 +846,11 @@ function App() {
   const daysCount = Object.keys(schedule[0].days).length;
   const stagesCount = Object.keys(schedule[0].days[0].stages).length;
 
-  //   useEffect(() => {
-  //     fetch("https://walrus-app-9mwix.ondigitalocean.app/api/schedule")
-  //       .then((response) => response.json())
-  //       .then((data) => console.log(data));
-  //   }, []);
+  useEffect(() => {
+    fetch("https://walrus-app-9mwix.ondigitalocean.app/api/schedule")
+      .then((response) => response.json())
+      .then((data) => console.log(data));
+  }, []);
 
   const stageSchedule =
     schedule[currentWeek].days[currentDay].stages[currentStage].artists;
@@ -910,8 +910,8 @@ function App() {
             <div className="top-button-description">Share</div>
           </div>
           <div className="top-button-container">
-            <button id="donate"></button>
-            <div className="top-button-description">Donate</div>
+            <button id="move"></button>
+            <div className="top-button-description">Move</div>
           </div>
         </div>
         <div id="top-buttons" className={shareOverlayVisible ? "tinted" : ""}>
@@ -946,20 +946,24 @@ function App() {
       {/* Week > Day > Stage selector  */}
       <div>
         <div id="week-selector">
-          <div className="week active">Week 1</div>
-          <div className="week">Week 2</div>
+          <div className="week-day-stage-item week active">Week 1</div>
+          <div className="week-day-stage-item week">Week 2</div>
         </div>
         <div id="day-selector">
-          <div className="day active">Friday</div>
-          <div className="day">Saturday</div>
-          <div className="day">Sunday</div>
+          <div className="week-day-stage-item day active">Friday</div>
+          <div className="week-day-stage-item day">Saturday</div>
+          <div className="week-day-stage-item day">Sunday</div>
         </div>
         <div id="stage-selector">
-          <div className="stage-item stage-previous-next">&lt;</div>
-          <div id="stage" className="stage-item active">
+          <div className="week-day-stage-item stage-item stage-previous-next">
+            &lt;
+          </div>
+          <div id="stage" className="week-day-stage-item stage-item active">
             Mainstage
           </div>
-          <div className="stage-item stage-previous-next">&gt;</div>
+          <div className="week-day-stage-item stage-item stage-previous-next">
+            &gt;
+          </div>
         </div>
       </div>
       {/* Current stage schedule  */}
