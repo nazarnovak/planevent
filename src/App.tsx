@@ -942,46 +942,28 @@ function App() {
           </div>
         </div>
       </div>
+      <h1>Unnamed schedule</h1>
       {/* Week > Day > Stage selector  */}
-      <div id="date-stage-selector">
-        {currentWeek > 0 && (
-          <span onClick={() => changeWeek(currentWeek - 1)}>&lt;</span>
-        )}{" "}
-        <span
-          style={{ display: "inline-block", width: "90px", padding: "0 10px" }}
-        >
-          {schedule[currentWeek].weekName}
-        </span>{" "}
-        {currentWeek < weeksCount - 1 && (
-          <span onClick={() => changeWeek(currentWeek + 1)}>&gt;</span>
-        )}
-        <br />
-        {currentDay > 0 && (
-          <span onClick={() => changeDay(currentDay - 1)}>&lt;</span>
-        )}{" "}
-        <span
-          style={{ display: "inline-block", width: "90px", padding: "0 10px" }}
-        >
-          {schedule[currentWeek].days[currentDay].weekDay}
-        </span>{" "}
-        {currentDay < daysCount - 1 && (
-          <span onClick={() => changeDay(currentDay + 1)}>&gt;</span>
-        )}
-        <br />
-        {currentStage > 0 && (
-          <span onClick={() => changeStage(currentStage - 1)}>&lt;</span>
-        )}{" "}
-        <span
-          style={{ display: "inline-block", width: "90px", padding: "0 10px" }}
-        >
-          {schedule[currentWeek].days[currentDay].stages[currentStage].stage}
-        </span>{" "}
-        {currentStage < stagesCount - 1 && (
-          <span onClick={() => changeStage(currentStage + 1)}>&gt;</span>
-        )}
+      <div>
+        <div id="week-selector">
+          <div className="week active">Week 1</div>
+          <div className="week">Week 2</div>
+        </div>
+        <div id="day-selector">
+          <div className="day active">Friday</div>
+          <div className="day">Saturday</div>
+          <div className="day">Sunday</div>
+        </div>
+        <div id="stage-selector">
+          <div className="stage-item stage-previous-next">&lt;</div>
+          <div id="stage" className="stage-item active">
+            Mainstage
+          </div>
+          <div className="stage-item stage-previous-next">&gt;</div>
+        </div>
       </div>
       {/* Current stage schedule  */}
-      <div>
+      <div id="schedule">
         {stageSchedule.map((slot, i) => {
           const hourStart = new Date(Date.parse(slot.timeStart));
           const hourEnd = new Date(Date.parse(slot.timeEnd));
