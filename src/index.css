@@ -94,7 +94,8 @@ body {
 }
 
 .tinted {
-  opacity: 0.3;
+  opacity: 0.5;
+  filter: blur(3px);
 }
 
 .flex {
