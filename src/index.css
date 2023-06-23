@@ -119,7 +119,7 @@ h1 {
 
 .week-day-stage-item {
   text-align: center;
-  border: 1px solid var(--white);
+  border: 2px solid var(--white);
   border-radius: calc(var(--font-size-base) * 1);
   font-size: calc(var(--font-size-base) * 3);
   line-height: calc(var(--font-size-base) * 3);
