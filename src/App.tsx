@@ -217,13 +217,20 @@ function App() {
           const hourEnd = new Date(Date.parse(slot.timeEnd));
 
           return (
-            <div key={slot.id} onClick={() => updateSlotStatus(slot.id)}>
-              {(hourStart.getHours() < 10 ? "0" : "") + hourStart.getHours()}:
-              {(hourStart.getMinutes() < 10 ? "0" : "") +
-                hourStart.getMinutes()}
-              -{(hourEnd.getHours() < 10 ? "0" : "") + hourEnd.getHours()}:
-              {(hourEnd.getMinutes() < 10 ? "0" : "") + hourEnd.getMinutes()}{" "}
-              {slot.artist}
+            <div
+              key={slot.id}
+              className="timeslot"
+              onClick={() => updateSlotStatus(slot.id)}
+            >
+              <div className="timeslot-sides">
+                {(hourStart.getHours() < 10 ? "0" : "") + hourStart.getHours()}:
+                {(hourStart.getMinutes() < 10 ? "0" : "") +
+                  hourStart.getMinutes()}
+                -{(hourEnd.getHours() < 10 ? "0" : "") + hourEnd.getHours()}:
+                {(hourEnd.getMinutes() < 10 ? "0" : "") + hourEnd.getMinutes()}{" "}
+              </div>
+              <div className="timeslot-artist">{slot.artist}</div>
+              <div className="timeslot-sides">4</div>
             </div>
           );
         })}

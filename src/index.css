@@ -65,7 +65,7 @@ body {
   height: calc(var(--font-size-base) * 6);
   border-radius: 100%;
   background-color: var(--black);
-  border: 1px solid var(--white);
+  border: 2px solid var(--white);
   cursor: pointer;
 }
 
@@ -124,6 +124,7 @@ h1 {
   font-size: calc(var(--font-size-base) * 3);
   line-height: calc(var(--font-size-base) * 3);
   cursor: pointer;
+  font-weight: bold;
 }
 
 #week-selector {
@@ -169,13 +170,38 @@ h1 {
 }
 
 .stage-previous-next {
-  flex-basis: 5%;
+  flex-basis: 10%;
 }
 
 #stage {
-  flex-basis: 90%;
+  flex-basis: 80%;
 }
 
 #schedule {
-  margin-top: calc(var(--font-size-base) * 2);
+  margin-top: calc(var(--font-size-base) * 4);
+}
+
+.timeslot {
+  display: flex;
+  gap: calc(var(--font-size-base) * 1);
+}
+
+.timeslot > div {
+  border: 2px solid var(--white);
+  padding: calc(var(--font-size-base) * 2) calc(var(--font-size-base) * 1);
+}
+
+.timeslot-sides {
+  flex-basis: 10%;
+  word-break: break-all;
+  text-align: center;
+}
+
+.timeslot-artist {
+  flex-basis: 80%;
+}
+
+.timeslot-artist:hover {
+  background-color: #999;
+  color: #000;
 }
