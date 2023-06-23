@@ -134,7 +134,7 @@ h1 {
 }
 
 .week {
-  flex-basis: 40%;
+  flex-basis: 50%;
   padding: calc(var(--font-size-base) * 2);
 }
 
@@ -152,7 +152,7 @@ h1 {
 }
 
 .day {
-  flex-basis: 30%;
+  flex-basis: 33.3%;
   padding: calc(var(--font-size-base) * 2) calc(var(--font-size-base) * 1);
 }
 
@@ -169,11 +169,11 @@ h1 {
 }
 
 .stage-previous-next {
-  flex-basis: 10%;
+  flex-basis: 5%;
 }
 
 #stage {
-  flex-basis: 80%;
+  flex-basis: 90%;
 }
 
 #schedule {
