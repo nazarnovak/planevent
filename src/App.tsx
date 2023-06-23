@@ -43,11 +43,14 @@ function App() {
   useEffect(() => {
     fetch("https://walrus-app-9mwix.ondigitalocean.app/api/schedule")
       .then((response) => response.json())
-      .then((data: ScheduleAPIResponse) => setSchedule(data.schedule));
+      .then((data: ScheduleAPIResponse) => {
+        setSchedule(data.schedule);
+      });
   }, []);
 
   const todaysSchedule =
-    schedule[currentWeek].days[currentDay].stages[currentStage].artists;
+    schedule[currentWeek]?.days[currentDay]?.stages[currentStage]?.artists ||
+    [];
 
   const changeWeek = (changedWeek: number) => {
     setCurrentWeek(changedWeek);
@@ -169,7 +172,7 @@ function App() {
           })}
         </div>
         <div id="day-selector">
-          {schedule[currentWeek].days.map((slot, i) => {
+          {schedule[currentWeek]?.days.map((slot, i) => {
             return (
               <div
                 key={i}
@@ -194,7 +197,10 @@ function App() {
             &lt;
           </div>
           <div id="stage" className="week-day-stage-item stage-item active">
-            {schedule[currentWeek].days[currentDay].stages[currentStage].stage}
+            {
+              schedule[currentWeek]?.days[currentDay]?.stages[currentStage]
+                ?.stage
+            }
           </div>
           <div
             className="week-day-stage-item stage-item stage-previous-next"
