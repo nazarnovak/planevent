@@ -40,12 +40,16 @@ function App() {
   const [currentDay, setCurrentDay] = useState(0);
   const [currentStage, setCurrentStage] = useState(0);
 
-  useEffect(() => {
+  const fetchLatestSchedule = () => {
     fetch("https://walrus-app-9mwix.ondigitalocean.app/api/schedule")
       .then((response) => response.json())
       .then((data: ScheduleAPIResponse) => {
         setSchedule(data.schedule);
       });
+  };
+
+  useEffect(() => {
+    fetchLatestSchedule();
   }, []);
 
   const todaysSchedule =
@@ -77,8 +81,20 @@ function App() {
     setCurrentStage(changedStage);
   };
 
-  const updateSlotStatus = (slotId: string) => {
-    alert("Sending to BE. Slot ID:" + slotId);
+  const updateSlotStatus = (slotId: string, newAttendingStatus: boolean) => {
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ eventId: slotId, attending: newAttendingStatus }),
+    };
+    fetch(
+      "https://walrus-app-9mwix.ondigitalocean.app/api/attend",
+      requestOptions
+    ).then((response) => {
+      if (!response.ok)
+        throw new Error("Something went wrong when updating attendance");
+      fetchLatestSchedule();
+    });
   };
 
   // The idea is to maybe take all the keys on a specific layer:
@@ -212,7 +228,12 @@ function App() {
       </div>
       {/* Current stage schedule  */}
       <div id="schedule">
-        {todaysSchedule.map((slot: any, i: any) => {
+        <div id="timeslot-header">
+          <div>Time</div>
+          <div>Artist</div>
+          <div>Attendees</div>
+        </div>
+        {todaysSchedule.map((slot: Artist, i: number) => {
           const hourStart = new Date(Date.parse(slot.timeStart));
           const hourEnd = new Date(Date.parse(slot.timeEnd));
 
@@ -220,7 +241,7 @@ function App() {
             <div
               key={slot.id}
               className="timeslot"
-              onClick={() => updateSlotStatus(slot.id)}
+              onClick={() => updateSlotStatus(slot.id, !slot.attending)}
             >
               <div className="timeslot-sides">
                 {(hourStart.getHours() < 10 ? "0" : "") + hourStart.getHours()}:
