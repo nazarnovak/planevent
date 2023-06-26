@@ -89,8 +89,7 @@ const App = () => {
     const subPaths = window.location.pathname.split("/");
     if (subPaths[1] === "move") {
       postLogin(subPaths[2]);
-      // window.location.href =
-      //   window.location.protocol + "//" + window.location.host;
+      window.history.replaceState({}, "Home", "/");
       return;
     }
 
