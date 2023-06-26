@@ -55,7 +55,9 @@ const App = () => {
   };
 
   const fetchSecret = () => {
-    fetch("https://walrus-app-9mwix.ondigitalocean.app/api/secret")
+    fetch("https://walrus-app-9mwix.ondigitalocean.app/api/secret", {
+      credentials: "include",
+    })
       .then((response) => response.text())
       .then((body: string) => {
         setSecretUUID(body);
@@ -367,7 +369,7 @@ const TodaysSchedule = (props: TodaysScheduleProps) => {
         return (
           <div
             key={slot.id}
-            className="timeslot"
+            className={`timeslot` + (slot.attending ? " attending" : "")}
             onClick={() =>
               props.updateAttendanceStatus(slot.id, !slot.attending)
             }

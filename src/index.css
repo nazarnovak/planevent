@@ -269,3 +269,7 @@ background-clip: text;
 .timeslot-artist {
   flex-basis: 80%;
 }
+
+.attending {
+  background: #00dd00;
+}
