@@ -124,18 +124,20 @@ const App = () => {
     slotId: string,
     newAttendingStatus: boolean
   ) => {
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ eventId: slotId, attending: newAttendingStatus }),
-    };
     fetch(
-      "https://walrus-app-9mwix.ondigitalocean.app/api/attend",
-      requestOptions
+      "https://walrus-app-9mwix.ondigitalocean.app/api/attend?eventId=" +
+        slotId +
+        "&attending=" +
+        newAttendingStatus,
+      {
+        method: "POST",
+        credentials: "include",
+      }
     ).then((response) => {
       if (!response.ok)
         throw new Error("Something went wrong when updating attendance");
     });
+    fetchLatestSchedule();
   };
 
   function timeout(delay: number) {
