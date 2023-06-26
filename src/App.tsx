@@ -65,13 +65,7 @@ const App = () => {
   };
 
   const postLogin = (secretId: string) => {
-    fetch("https://walrus-app-9mwix.ondigitalocean.app/api/secret")
-      .then((response) => response.text())
-      .then((body: string) => {
-        setSecretUUID(body);
-      });
-
-    fetch(
+    return fetch(
       "https://walrus-app-9mwix.ondigitalocean.app/api/login?secretId=" +
         secretId,
       {
@@ -84,16 +78,18 @@ const App = () => {
   };
 
   useEffect(() => {
-    fetchLatestSchedule();
+    const fetchAPI = async () => {
+      const subPaths = window.location.pathname.split("/");
+      if (subPaths[1] === "move") {
+        await postLogin(subPaths[2]);
+        window.history.replaceState({}, "Home", "/");
+      }
 
-    const subPaths = window.location.pathname.split("/");
-    if (subPaths[1] === "move") {
-      postLogin(subPaths[2]);
-      window.history.replaceState({}, "Home", "/");
-      return;
-    }
+      fetchLatestSchedule();
+      fetchSecret();
+    };
 
-    fetchSecret();
+    fetchAPI();
   }, []);
 
   const changeWeek = (changedWeek: number) => {
