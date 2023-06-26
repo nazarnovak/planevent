@@ -64,7 +64,6 @@ body {
   width: calc(var(--font-size-base) * 6);
   height: calc(var(--font-size-base) * 6);
   border-radius: 100%;
-  background-color: var(--black);
   border: 2px solid var(--white);
   cursor: pointer;
 }
@@ -72,6 +71,19 @@ body {
 .top-button-container > button > img {
   width: calc(var(--font-size-base) * 3);
   height: calc(var(--font-size-base) * 3);
+}
+
+.button-black {
+  background-color: var(--black);
+}
+
+.button-green {
+  background-color: #04ad15;
+}
+
+.text-green {
+  color: #04ad15;
+  font-weight: bold;
 }
 
 #donate {

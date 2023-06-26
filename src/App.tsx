@@ -34,6 +34,12 @@ interface ScheduleAPIResponse {
 
 const App = () => {
   const [secretUUID, setSecretUUID] = useState("");
+
+  const [showMoveCopiedToClipboard, setShowMoveCopiedToClipboard] =
+    useState(false);
+  const [showShareCopiedToClipboard, setShareCopiedToClipboard] =
+    useState(false);
+
   const [schedule, setSchedule] = useState([] as Schedule[]);
 
   const [currentWeek, setCurrentWeek] = useState(0);
@@ -132,7 +138,11 @@ const App = () => {
     });
   };
 
-  const handleMoveSchedule = () => {
+  function timeout(delay: number) {
+    return new Promise((res) => setTimeout(res, delay));
+  }
+
+  const handleMoveSchedule = async () => {
     navigator.clipboard.writeText(
       window.location.protocol +
         "//" +
@@ -140,6 +150,24 @@ const App = () => {
         "/move/" +
         secretUUID
     );
+
+    setShowMoveCopiedToClipboard(true);
+    await timeout(2000);
+    setShowMoveCopiedToClipboard(false);
+  };
+
+  const handleShareSchedule = async () => {
+    navigator.clipboard.writeText(
+      window.location.protocol +
+        "//" +
+        window.location.hostname +
+        "/share/" +
+        secretUUID
+    );
+
+    setShareCopiedToClipboard(true);
+    await timeout(2000);
+    setShareCopiedToClipboard(false);
   };
 
   return (
@@ -147,23 +175,66 @@ const App = () => {
       <div id="top-buttons-container">
         <div id="top-buttons">
           <div className="top-button-container">
-            <button id="move-schedule" onClick={handleMoveSchedule}>
-              <img
-                src="/device.png"
-                alt="Move schedule to a different device"
-              />
-            </button>
-            <div className="top-button-description">
-              Move schedule to a different device
-            </div>
+            {!showMoveCopiedToClipboard && (
+              <>
+                <button
+                  id="move-schedule"
+                  className="button-black"
+                  onClick={handleMoveSchedule}
+                >
+                  <img
+                    src="/device.png"
+                    alt="Move schedule to a different device"
+                  />
+                </button>
+                <div className="top-button-description">
+                  Move schedule to a new device
+                </div>
+              </>
+            )}
+            {showMoveCopiedToClipboard && (
+              <>
+                <button className="success-checkmark-button button-green">
+                  <img
+                    src="/checkmark.png"
+                    alt="Copied move link to clipboard"
+                  />
+                </button>
+                <div className="top-button-description text-green">
+                  Link copied to clipboard
+                  <br />
+                </div>
+              </>
+            )}
           </div>
           <div className="top-button-container">
-            <button id="share-schedule">
-              <img src="/share.png" alt="Share schedule with others" />
-            </button>
-            <div className="top-button-description">
-              Share schedule with others
-            </div>
+            {!showShareCopiedToClipboard && (
+              <>
+                <button
+                  id="share-schedule"
+                  className="button-black"
+                  onClick={handleShareSchedule}
+                >
+                  <img src="/share.png" alt="Share schedule with others" />
+                </button>
+                <div className="top-button-description">
+                  Share schedule with others
+                </div>
+              </>
+            )}
+            {showShareCopiedToClipboard && (
+              <>
+                <button className="success-checkmark-button button-green">
+                  <img
+                    src="/checkmark.png"
+                    alt="Copied share link to clipboard"
+                  />
+                </button>
+                <div className="top-button-description text-green">
+                  Link copied to clipboard
+                </div>
+              </>
+            )}
           </div>
           <div className="top-button-container">
             <button id="donate">
@@ -173,7 +244,7 @@ const App = () => {
           </div>
         </div>
       </div>
-      <h1>Unnamed schedule</h1>
+      <h1>Unnamed</h1>
       <DaySelector
         schedule={schedule}
         currentWeek={currentWeek}
