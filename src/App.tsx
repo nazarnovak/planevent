@@ -33,6 +33,7 @@ interface ScheduleAPIResponse {
 }
 
 const App = () => {
+  const [secretUUID, setSecretUUID] = useState("");
   const [schedule, setSchedule] = useState([] as Schedule[]);
 
   const [currentWeek, setCurrentWeek] = useState(0);
@@ -47,8 +48,45 @@ const App = () => {
       });
   };
 
+  const fetchSecret = () => {
+    fetch("https://walrus-app-9mwix.ondigitalocean.app/api/secret")
+      .then((response) => response.text())
+      .then((body: string) => {
+        setSecretUUID(body);
+      });
+  };
+
+  const postLogin = (secretId: string) => {
+    fetch("https://walrus-app-9mwix.ondigitalocean.app/api/secret")
+      .then((response) => response.text())
+      .then((body: string) => {
+        setSecretUUID(body);
+      });
+
+    fetch(
+      "https://walrus-app-9mwix.ondigitalocean.app/api/login?secretId=" +
+        secretId,
+      {
+        method: "POST",
+      }
+    ).then((response) => {
+      if (!response.ok)
+        throw new Error("Something went wrong when logging user in");
+    });
+  };
+
   useEffect(() => {
     fetchLatestSchedule();
+
+    const subPaths = window.location.pathname.split("/");
+    if (subPaths[1] === "move") {
+      postLogin(subPaths[2]);
+      window.location.href =
+        window.location.protocol + "//" + window.location.host;
+      return;
+    }
+
+    fetchSecret();
   }, []);
 
   const changeWeek = (changedWeek: number) => {
@@ -94,31 +132,22 @@ const App = () => {
     });
   };
 
-  // The idea is to maybe take all the keys on a specific layer:
-  // week1 week2
-  // friday, saturday, sunday
-  // mainstage, freedom, etc
-  // and from that, take the first key as the "default" state, so week1, friday, mainstage
-  // but then how do you select next entries? how do I know I'm in position 0,0,0 now, and that I want to show arrows to the right now,
-  // but when I am in position 1,1,1, you show left arrows + right arrows if there's an array index 2 in the respectful array
-
-  // const keys1 = Object.keys(this.state.items);
-  // const keys2 = Object.keys(this.state.items[keys1[0]]);
-  // const keys3 = Object.keys(this.state.items[keys1[0]][keys2[0]]);
-  // return (
-  //   <div>
-  //     <h1>{keys1[0]}</h1>
-  //     <h2>{keys2[0]}</h2>
-  //     <h3>{keys3[0]}</h3>
-  //   </div>
-  // )
+  const handleMoveSchedule = () => {
+    navigator.clipboard.writeText(
+      window.location.protocol +
+        "//" +
+        window.location.hostname +
+        "/move/" +
+        secretUUID
+    );
+  };
 
   return (
     <div>
       <div id="top-buttons-container">
         <div id="top-buttons">
           <div className="top-button-container">
-            <button id="move-schedule">
+            <button id="move-schedule" onClick={handleMoveSchedule}>
               <img
                 src="/device.png"
                 alt="Move schedule to a different device"
