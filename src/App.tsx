@@ -32,9 +32,8 @@ interface ScheduleAPIResponse {
   schedule: Schedule[];
 }
 
-function App() {
+const App = () => {
   const [schedule, setSchedule] = useState([] as Schedule[]);
-  const [shareOverlayVisible, setShareOverlayVisible] = useState(false);
 
   const [currentWeek, setCurrentWeek] = useState(0);
   const [currentDay, setCurrentDay] = useState(0);
@@ -51,10 +50,6 @@ function App() {
   useEffect(() => {
     fetchLatestSchedule();
   }, []);
-
-  const todaysSchedule =
-    schedule[currentWeek]?.days[currentDay]?.stages[currentStage]?.artists ||
-    [];
 
   const changeWeek = (changedWeek: number) => {
     setCurrentWeek(changedWeek);
@@ -81,7 +76,10 @@ function App() {
     setCurrentStage(changedStage);
   };
 
-  const updateSlotStatus = (slotId: string, newAttendingStatus: boolean) => {
+  const updateAttendanceStatus = (
+    slotId: string,
+    newAttendingStatus: boolean
+  ) => {
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -93,7 +91,6 @@ function App() {
     ).then((response) => {
       if (!response.ok)
         throw new Error("Something went wrong when updating attendance");
-      fetchLatestSchedule();
     });
   };
 
@@ -116,23 +113,12 @@ function App() {
   //   </div>
   // )
 
-  const openShareOverlay = () => {
-    setShareOverlayVisible(true);
-  };
-
-  const closeShareOverlay = () => {
-    setShareOverlayVisible(false);
-  };
-
   return (
     <div>
       <div id="top-buttons-container">
-        <div
-          id="share-buttons-overlay"
-          className={shareOverlayVisible ? "flex" : "hidden"}
-        >
+        <div id="top-buttons">
           <div className="top-button-container">
-            <button id="move-schedule" onClick={closeShareOverlay}>
+            <button id="move-schedule">
               <img
                 src="/device.png"
                 alt="Move schedule to a different device"
@@ -143,22 +129,12 @@ function App() {
             </div>
           </div>
           <div className="top-button-container">
-            <button id="share-schedule" onClick={closeShareOverlay}>
+            <button id="share-schedule">
               <img src="/share.png" alt="Share schedule with others" />
             </button>
             <div className="top-button-description">
               Share schedule with others
             </div>
-          </div>
-        </div>
-        <div id="top-buttons" className={shareOverlayVisible ? "tinted" : ""}>
-          <div className="top-button-container">
-            <button id="search-time"></button>
-            <div className="top-button-description">Search time</div>
-          </div>
-          <div className="top-button-container">
-            <button id="move" onClick={openShareOverlay}></button>
-            <div className="top-button-description">Share</div>
           </div>
           <div className="top-button-container">
             <button id="donate">
@@ -169,95 +145,145 @@ function App() {
         </div>
       </div>
       <h1>Unnamed schedule</h1>
-      {/* Week > Day > Stage selector  */}
-      <div>
-        <div id="week-selector">
-          {schedule.map((slot, i) => {
-            return (
-              <div
-                key={i}
-                className={
-                  `week-day-stage-item week` +
-                  (i === currentWeek ? " active" : "")
-                }
-                onClick={() => changeWeek(i)}
-              >
-                {slot.weekName}
-              </div>
-            );
-          })}
-        </div>
-        <div id="day-selector">
-          {schedule[currentWeek]?.days.map((slot, i) => {
-            return (
-              <div
-                key={i}
-                className={
-                  `week-day-stage-item day` +
-                  (i === currentDay ? " active" : "")
-                }
-                onClick={() => changeDay(i)}
-              >
-                {slot.weekDay}
-              </div>
-            );
-          })}
-        </div>
-        <div id="stage-selector">
-          <div
-            className="week-day-stage-item stage-item stage-previous-next"
-            onClick={() => {
-              changeStage(currentStage - 1);
-            }}
-          >
-            &lt;
-          </div>
-          <div id="stage" className="week-day-stage-item stage-item active">
-            {
-              schedule[currentWeek]?.days[currentDay]?.stages[currentStage]
-                ?.stage
-            }
-          </div>
-          <div
-            className="week-day-stage-item stage-item stage-previous-next"
-            onClick={() => changeStage(currentStage + 1)}
-          >
-            &gt;
-          </div>
-        </div>
-      </div>
-      {/* Current stage schedule  */}
-      <div id="schedule">
-        <div id="timeslot-header">
-          <div>Time</div>
-          <div>Artist</div>
-          <div>Attendees</div>
-        </div>
-        {todaysSchedule.map((slot: Artist, i: number) => {
-          const hourStart = new Date(Date.parse(slot.timeStart));
-          const hourEnd = new Date(Date.parse(slot.timeEnd));
+      <DaySelector
+        schedule={schedule}
+        currentWeek={currentWeek}
+        currentDay={currentDay}
+        currentStage={currentStage}
+        changeWeek={changeWeek}
+        changeDay={changeDay}
+        changeStage={changeStage}
+      />
+      <TodaysSchedule
+        schedule={
+          schedule[currentWeek]?.days[currentDay]?.stages[currentStage]
+            ?.artists || []
+        }
+        updateAttendanceStatus={updateAttendanceStatus}
+      />
+    </div>
+  );
+};
 
+interface DaySelectorProps {
+  schedule: Schedule[];
+  currentWeek: number;
+  currentDay: number;
+  currentStage: number;
+  changeWeek: (weekNumber: number) => void;
+  changeDay: (weekNumber: number) => void;
+  changeStage: (weekNumber: number) => void;
+}
+
+const DaySelector = (props: DaySelectorProps) => {
+  if (props.schedule.length === 0) {
+    return <div>Loading dates...</div>;
+  }
+
+  return (
+    <div>
+      <div id="week-selector">
+        {props.schedule.map((slot, i) => {
           return (
             <div
-              key={slot.id}
-              className="timeslot"
-              onClick={() => updateSlotStatus(slot.id, !slot.attending)}
+              key={i}
+              className={
+                `week-day-stage-item week` +
+                (i === props.currentWeek ? " active" : "")
+              }
+              onClick={() => props.changeWeek(i)}
             >
-              <div className="timeslot-sides">
-                {(hourStart.getHours() < 10 ? "0" : "") + hourStart.getHours()}:
-                {(hourStart.getMinutes() < 10 ? "0" : "") +
-                  hourStart.getMinutes()}
-                -{(hourEnd.getHours() < 10 ? "0" : "") + hourEnd.getHours()}:
-                {(hourEnd.getMinutes() < 10 ? "0" : "") + hourEnd.getMinutes()}{" "}
-              </div>
-              <div className="timeslot-artist">{slot.artist}</div>
-              <div className="timeslot-sides">4</div>
+              {slot.weekName}
             </div>
           );
         })}
       </div>
+      <div id="day-selector">
+        {props.schedule[props.currentWeek]?.days.map((slot, i) => {
+          return (
+            <div
+              key={i}
+              className={
+                `week-day-stage-item day` +
+                (i === props.currentDay ? " active" : "")
+              }
+              onClick={() => props.changeDay(i)}
+            >
+              {slot.weekDay}
+            </div>
+          );
+        })}
+      </div>
+      <div id="stage-selector">
+        <div
+          className="week-day-stage-item stage-item stage-previous-next"
+          onClick={() => {
+            props.changeStage(props.currentStage - 1);
+          }}
+        >
+          &lt;
+        </div>
+        <div id="stage" className="week-day-stage-item stage-item active">
+          {
+            props.schedule[props.currentWeek]?.days[props.currentDay]?.stages[
+              props.currentStage
+            ]?.stage
+          }
+        </div>
+        <div
+          className="week-day-stage-item stage-item stage-previous-next"
+          onClick={() => props.changeStage(props.currentStage + 1)}
+        >
+          &gt;
+        </div>
+      </div>
     </div>
   );
+};
+
+interface TodaysScheduleProps {
+  schedule: Artist[];
+  updateAttendanceStatus: (slotId: string, newAttendingStatus: boolean) => void;
 }
+
+const TodaysSchedule = (props: TodaysScheduleProps) => {
+  if (props.schedule.length === 0) {
+    return <div>Loading artists...</div>;
+  }
+
+  return (
+    <div id="schedule">
+      <div id="timeslot-header">
+        <div>Time</div>
+        <div>Artist</div>
+        <div>Attendees</div>
+      </div>
+      {props.schedule.map((slot: Artist, i: number) => {
+        const hourStart = new Date(Date.parse(slot.timeStart));
+        const hourEnd = new Date(Date.parse(slot.timeEnd));
+
+        return (
+          <div
+            key={slot.id}
+            className="timeslot"
+            onClick={() =>
+              props.updateAttendanceStatus(slot.id, !slot.attending)
+            }
+          >
+            <div className="timeslot-sides">
+              {(hourStart.getHours() < 10 ? "0" : "") + hourStart.getHours()}:
+              {(hourStart.getMinutes() < 10 ? "0" : "") +
+                hourStart.getMinutes()}
+              -{(hourEnd.getHours() < 10 ? "0" : "") + hourEnd.getHours()}:
+              {(hourEnd.getMinutes() < 10 ? "0" : "") + hourEnd.getMinutes()}{" "}
+            </div>
+            <div className="timeslot-artist">{slot.artist}</div>
+            <div className="timeslot-sides">4</div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
 export default App;
