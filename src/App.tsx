@@ -47,7 +47,9 @@ const App = () => {
   const [currentStage, setCurrentStage] = useState(0);
 
   const fetchLatestSchedule = () => {
-    fetch("https://walrus-app-9mwix.ondigitalocean.app/api/schedule")
+    fetch("https://planevent.me/api/schedule", {
+      credentials: "include",
+    })
       .then((response) => response.json())
       .then((data: ScheduleAPIResponse) => {
         setSchedule(data.schedule);
@@ -55,7 +57,7 @@ const App = () => {
   };
 
   const fetchSecret = () => {
-    fetch("https://walrus-app-9mwix.ondigitalocean.app/api/secret", {
+    fetch("https://planevent.me/api/secret", {
       credentials: "include",
     })
       .then((response) => response.text())
@@ -65,13 +67,10 @@ const App = () => {
   };
 
   const postLogin = (secretId: string) => {
-    return fetch(
-      "https://walrus-app-9mwix.ondigitalocean.app/api/login?secretId=" +
-        secretId,
-      {
-        method: "POST",
-      }
-    ).then((response) => {
+    return fetch("https://planevent.me/api/login?secretId=" + secretId, {
+      method: "POST",
+      credentials: "include",
+    }).then((response) => {
       if (!response.ok)
         throw new Error("Something went wrong when logging user in");
     });
@@ -122,7 +121,7 @@ const App = () => {
     newAttendingStatus: boolean
   ) => {
     fetch(
-      "https://walrus-app-9mwix.ondigitalocean.app/api/attend?eventId=" +
+      "https://planevent.me/api/attend?eventId=" +
         slotId +
         "&attending=" +
         newAttendingStatus,
@@ -167,6 +166,10 @@ const App = () => {
     setShareCopiedToClipboard(true);
     await timeout(2000);
     setShareCopiedToClipboard(false);
+  };
+
+  const handleDonateClick = () => {
+    window.open("https://buy.stripe.com/6oE7tu7UM3235dCeUU", "_blank");
   };
 
   return (
@@ -236,7 +239,7 @@ const App = () => {
             )}
           </div>
           <div className="top-button-container">
-            <button id="donate">
+            <button id="donate" onClick={handleDonateClick}>
               <img src="/heart.png" alt="Donate" />
             </button>
             <div className="top-button-description">Donate</div>
