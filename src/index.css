@@ -20,6 +20,16 @@ body {
   margin: 0 auto;
 }
 
+#title {
+  font-size: calc(var(--font-size-base) * 5);
+  line-height: calc(var(--font-size-base) * 5);
+  text-align: center;
+  font-weight: bold;
+  padding: 0px calc(var(--font-size-base) * 3);
+  outline: none;
+  background-color: var(--black);
+}
+
 @media (min-width: 0px) and (max-width: 320px) {
   body {
     padding: 0 calc(var(--font-size-base) * 1);
@@ -29,6 +39,10 @@ body {
 @media (min-width: 321px) and (max-width: 655px) {
   body {
     padding: 0 calc(var(--font-size-base) * 2);
+  }
+  #title {
+    font-size: calc(var(--font-size-base) * 4);
+    line-height: calc(var(--font-size-base) * 4);
   }
 }
 
@@ -143,16 +157,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-#title {
-  font-size: calc(var(--font-size-base) * 5);
-  line-height: calc(var(--font-size-base) * 5);
-  text-align: center;
-  font-weight: bold;
-  padding: 0px calc(var(--font-size-base) * 3);
-  outline: none;
-  background-color: var(--black);
 }
 
 #edit-title-button {

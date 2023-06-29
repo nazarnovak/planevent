@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Artist {
   id: string;
@@ -41,10 +41,6 @@ const App = () => {
   const [showShareCopiedToClipboard, setShareCopiedToClipboard] =
     useState(false);
 
-  const [titleChanged, setTitleChanged] = useState(false);
-  const [titleUnput, setTitleInput] = useState(
-    null as unknown as HTMLInputElement
-  );
   const [title, setTitle] = useState("Unnamed");
 
   const [currentWeek, setCurrentWeek] = useState(0);
@@ -183,6 +179,11 @@ const App = () => {
     window.open("https://buy.stripe.com/6oE7tu7UM3235dCeUU", "_blank");
   };
 
+  const handleTitleChange = (newTitle: string) => {
+    setShowShareError(false);
+    setTitle(newTitle);
+  };
+
   return (
     <div>
       <div id="top-buttons-container">
@@ -272,23 +273,10 @@ const App = () => {
       </div>
       <div id="title-and-edit-button">
         <Title
-          title={title}
-          titleChanged={titleChanged}
-          setTitle={setTitle}
-          setTitleInput={setTitleInput}
-          setTitleChanged={setTitleChanged}
           warningFont={showShareError}
+          title={title}
+          handleTitleChange={handleTitleChange}
         />
-        <button
-          id="edit-title-button"
-          className="button-black"
-          onClick={() => {
-            setShowShareError(false);
-            titleUnput?.select();
-          }}
-        >
-          <img src="/pencil.png" alt="Edit title" />
-        </button>
       </div>
       <DaySelector
         schedule={schedule}
@@ -311,34 +299,21 @@ const App = () => {
 };
 
 interface TitleProps {
-  title: string;
-  titleChanged: boolean;
-  setTitleChanged: (changed: boolean) => void;
-  setTitle: (title: string) => void;
-  setTitleInput: (elem: HTMLInputElement) => void;
   warningFont: boolean;
+  title: string;
+  handleTitleChange: (title: string) => void;
 }
 
 const Title = (props: TitleProps) => {
-  const titleInput = useRef(null as unknown as HTMLInputElement);
-  const [width, setWidth] = useState(0);
-
-  useEffect(() => {
-    props.setTitleInput(titleInput.current);
-  }, [props]);
-
-  useEffect(() => {
-    setWidth(props.title.length);
-  }, [props.title]);
-
   return (
     <input
-      style={{ width: width + "ch" }}
+      style={{ width: "100%" }}
       id="title"
       className={props.warningFont ? "text-orange" : "text-white"}
       type="text"
+      maxLength={16}
       onChange={(e) => {
-        props.setTitle(e.target.value as string);
+        props.handleTitleChange(e.target.value as string);
       }}
       onKeyUp={(e) => {
         if (e.key === "Enter") {
@@ -348,7 +323,6 @@ const Title = (props: TitleProps) => {
         }
       }}
       value={props.title}
-      ref={titleInput}
     />
   );
 };
