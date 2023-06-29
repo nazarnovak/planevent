@@ -36,6 +36,7 @@ const App = () => {
   const [secretUUID, setSecretUUID] = useState("");
 
   const [sharedLineupID, setSharedLineupID] = useState("");
+  const [following, setFollowing] = useState(false);
 
   const [showMoveCopiedToClipboard, setShowMoveCopiedToClipboard] =
     useState(false);
@@ -164,7 +165,7 @@ const App = () => {
   };
 
   const handleShareLineup = async () => {
-    if (title === "Unnamed") {
+    if (title === "Your name") {
       setShowShareError(true);
       return;
     }
@@ -193,6 +194,19 @@ const App = () => {
   const handleMyLineup = () => {
     window.location.href =
       window.location.protocol + "//" + window.location.hostname + "/";
+  };
+
+  const handleFollowLineup = () => {
+    fetch("https://planevent.me/api/follow?publicId=" + sharedLineupID, {
+      method: "POST",
+      credentials: "include",
+    }).then((response) => {
+      if (!response.ok) {
+        throw new Error("Something went wrong when updating attendance");
+      }
+
+      setFollowing(true);
+    });
   };
 
   return (
@@ -250,11 +264,20 @@ const App = () => {
                 <button
                   id="my-schedule"
                   className="button-black"
-                  // onClick={handleMoveLineup}
+                  onClick={handleFollowLineup}
                 >
                   <img src="/plus.png" alt="Follow this lineup" />
                 </button>
-                <div className="top-button-description">Follow this lineup</div>
+                {!following && (
+                  <div className="top-button-description">
+                    Follow this lineup
+                  </div>
+                )}
+                {following && (
+                  <div className="top-button-description">
+                    Unfollow this lineup
+                  </div>
+                )}
               </>
             )}
             {sharedLineupID === "" && showShareError && (
