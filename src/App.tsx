@@ -37,7 +37,7 @@ const App = () => {
 
   const [showMoveCopiedToClipboard, setShowMoveCopiedToClipboard] =
     useState(false);
-  const [showShareError, setShowShareError] = useState(true);
+  const [showShareError, setShowShareError] = useState(false);
   const [showShareCopiedToClipboard, setShareCopiedToClipboard] =
     useState(false);
 
