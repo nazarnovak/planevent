@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface Artist {
   id: string;
@@ -37,14 +37,21 @@ const App = () => {
 
   const [showMoveCopiedToClipboard, setShowMoveCopiedToClipboard] =
     useState(false);
+  const [showShareError, setShowShareError] = useState(true);
   const [showShareCopiedToClipboard, setShareCopiedToClipboard] =
     useState(false);
 
-  const [schedule, setSchedule] = useState([] as Schedule[]);
+  const [titleChanged, setTitleChanged] = useState(false);
+  const [titleUnput, setTitleInput] = useState(
+    null as unknown as HTMLInputElement
+  );
+  const [title, setTitle] = useState("Unnamed");
 
   const [currentWeek, setCurrentWeek] = useState(0);
   const [currentDay, setCurrentDay] = useState(0);
   const [currentStage, setCurrentStage] = useState(0);
+
+  const [schedule, setSchedule] = useState([] as Schedule[]);
 
   const fetchLatestSchedule = () => {
     fetch("https://planevent.me/api/schedule", {
@@ -155,6 +162,10 @@ const App = () => {
   };
 
   const handleShareSchedule = async () => {
+    if (title === "Unnamed") {
+      setShowShareError(true);
+      return;
+    }
     navigator.clipboard.writeText(
       window.location.protocol +
         "//" +
@@ -210,7 +221,20 @@ const App = () => {
             )}
           </div>
           <div className="top-button-container">
-            {!showShareCopiedToClipboard && (
+            {showShareError && (
+              <>
+                <button id="share-error" className="button-orange">
+                  <img
+                    src="/exclamation.png"
+                    alt="Please add title, before sharing"
+                  />
+                </button>
+                <div className="top-button-description text-orange">
+                  Please add title, before sharing
+                </div>
+              </>
+            )}
+            {!showShareError && !showShareCopiedToClipboard && (
               <>
                 <button
                   id="share-schedule"
@@ -224,7 +248,7 @@ const App = () => {
                 </div>
               </>
             )}
-            {showShareCopiedToClipboard && (
+            {!showShareError && showShareCopiedToClipboard && (
               <>
                 <button className="success-checkmark-button button-green">
                   <img
@@ -246,7 +270,26 @@ const App = () => {
           </div>
         </div>
       </div>
-      <h1>Unnamed</h1>
+      <div id="title-and-edit-button">
+        <Title
+          title={title}
+          titleChanged={titleChanged}
+          setTitle={setTitle}
+          setTitleInput={setTitleInput}
+          setTitleChanged={setTitleChanged}
+          warningFont={showShareError}
+        />
+        <button
+          id="edit-title-button"
+          className="button-black"
+          onClick={() => {
+            setShowShareError(false);
+            titleUnput?.select();
+          }}
+        >
+          <img src="/pencil.png" alt="Edit title" />
+        </button>
+      </div>
       <DaySelector
         schedule={schedule}
         currentWeek={currentWeek}
@@ -264,6 +307,49 @@ const App = () => {
         updateAttendanceStatus={updateAttendanceStatus}
       />
     </div>
+  );
+};
+
+interface TitleProps {
+  title: string;
+  titleChanged: boolean;
+  setTitleChanged: (changed: boolean) => void;
+  setTitle: (title: string) => void;
+  setTitleInput: (elem: HTMLInputElement) => void;
+  warningFont: boolean;
+}
+
+const Title = (props: TitleProps) => {
+  const titleInput = useRef(null as unknown as HTMLInputElement);
+  const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    props.setTitleInput(titleInput.current);
+  }, [props]);
+
+  useEffect(() => {
+    setWidth(props.title.length);
+  }, [props.title]);
+
+  return (
+    <input
+      style={{ width: width + "ch" }}
+      id="title"
+      className={props.warningFont ? "text-orange" : "text-white"}
+      type="text"
+      onChange={(e) => {
+        props.setTitle(e.target.value as string);
+      }}
+      onKeyUp={(e) => {
+        if (e.key === "Enter") {
+          const target = e.target as HTMLInputElement;
+          e.preventDefault();
+          target.blur();
+        }
+      }}
+      value={props.title}
+      ref={titleInput}
+    />
   );
 };
 
