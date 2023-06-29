@@ -35,13 +35,15 @@ interface ScheduleAPIResponse {
 const App = () => {
   const [secretUUID, setSecretUUID] = useState("");
 
+  const [sharedLineupID, setSharedLineupID] = useState("");
+
   const [showMoveCopiedToClipboard, setShowMoveCopiedToClipboard] =
     useState(false);
   const [showShareError, setShowShareError] = useState(false);
   const [showShareCopiedToClipboard, setShareCopiedToClipboard] =
     useState(false);
 
-  const [title, setTitle] = useState("Unnamed");
+  const [title, setTitle] = useState("Your name");
 
   const [currentWeek, setCurrentWeek] = useState(0);
   const [currentDay, setCurrentDay] = useState(0);
@@ -82,9 +84,13 @@ const App = () => {
   useEffect(() => {
     const fetchAPI = async () => {
       const subPaths = window.location.pathname.split("/");
-      if (subPaths[1] === "move") {
+      if (subPaths[1] === "move" && !!subPaths[2]) {
         await postLogin(subPaths[2]);
         window.history.replaceState({}, "Home", "/");
+      }
+
+      if (subPaths[1] === "shared" && !!subPaths[2]) {
+        setSharedLineupID(subPaths[2]);
       }
 
       fetchLatestSchedule();
@@ -143,7 +149,7 @@ const App = () => {
     return new Promise((res) => setTimeout(res, delay));
   }
 
-  const handleMoveSchedule = async () => {
+  const handleMoveLineup = async () => {
     navigator.clipboard.writeText(
       window.location.protocol +
         "//" +
@@ -157,7 +163,7 @@ const App = () => {
     setShowMoveCopiedToClipboard(false);
   };
 
-  const handleShareSchedule = async () => {
+  const handleShareLineup = async () => {
     if (title === "Unnamed") {
       setShowShareError(true);
       return;
@@ -166,7 +172,7 @@ const App = () => {
       window.location.protocol +
         "//" +
         window.location.hostname +
-        "/share/" +
+        "/shared/" +
         secretUUID
     );
 
@@ -184,29 +190,46 @@ const App = () => {
     setTitle(newTitle);
   };
 
+  const handleMyLineup = () => {
+    window.location.href =
+      window.location.protocol + "//" + window.location.hostname + "/";
+  };
+
   return (
     <div>
       <div id="top-buttons-container">
         <div id="top-buttons">
           <div className="top-button-container">
-            {!showMoveCopiedToClipboard && (
+            {sharedLineupID !== "" && (
               <>
                 <button
-                  id="move-schedule"
+                  id="my-schedule"
                   className="button-black"
-                  onClick={handleMoveSchedule}
+                  onClick={handleMyLineup}
+                >
+                  <img src="/my-page.png" alt="My lineup" />
+                </button>
+                <div className="top-button-description">My lineup</div>
+              </>
+            )}
+            {sharedLineupID === "" && !showMoveCopiedToClipboard && (
+              <>
+                <button
+                  id="move-lineup"
+                  className="button-black"
+                  onClick={handleMoveLineup}
                 >
                   <img
                     src="/device.png"
-                    alt="Move schedule to a different device"
+                    alt="Move lineup to a different device"
                   />
                 </button>
                 <div className="top-button-description">
-                  Move schedule to a new device
+                  Move lineup to a new device
                 </div>
               </>
             )}
-            {showMoveCopiedToClipboard && (
+            {sharedLineupID === "" && showMoveCopiedToClipboard && (
               <>
                 <button className="success-checkmark-button button-green">
                   <img
@@ -222,46 +245,59 @@ const App = () => {
             )}
           </div>
           <div className="top-button-container">
-            {showShareError && (
-              <>
-                <button id="share-error" className="button-orange">
-                  <img
-                    src="/exclamation.png"
-                    alt="Please add title, before sharing"
-                  />
-                </button>
-                <div className="top-button-description text-orange">
-                  Please add title, before sharing
-                </div>
-              </>
-            )}
-            {!showShareError && !showShareCopiedToClipboard && (
+            {sharedLineupID !== "" && (
               <>
                 <button
-                  id="share-schedule"
+                  id="my-schedule"
                   className="button-black"
-                  onClick={handleShareSchedule}
+                  // onClick={handleMoveLineup}
                 >
-                  <img src="/share.png" alt="Share schedule with others" />
+                  <img src="/plus.png" alt="Follow this lineup" />
                 </button>
-                <div className="top-button-description">
-                  Share schedule with others
-                </div>
+                <div className="top-button-description">Follow this lineup</div>
               </>
             )}
-            {!showShareError && showShareCopiedToClipboard && (
+            {sharedLineupID === "" && showShareError && (
               <>
-                <button className="success-checkmark-button button-green">
-                  <img
-                    src="/checkmark.png"
-                    alt="Copied share link to clipboard"
-                  />
+                <button id="share-error" className="button-orange">
+                  <img src="/exclamation.png" alt="Please enter your name" />
                 </button>
-                <div className="top-button-description text-green">
-                  Link copied to clipboard
+                <div className="top-button-description text-orange">
+                  Please enter your name
                 </div>
               </>
             )}
+            {sharedLineupID === "" &&
+              !showShareError &&
+              !showShareCopiedToClipboard && (
+                <>
+                  <button
+                    id="share-lineup"
+                    className="button-black"
+                    onClick={handleShareLineup}
+                  >
+                    <img src="/share.png" alt="Share lineup with others" />
+                  </button>
+                  <div className="top-button-description">
+                    Share lineup with others
+                  </div>
+                </>
+              )}
+            {sharedLineupID === "" &&
+              !showShareError &&
+              showShareCopiedToClipboard && (
+                <>
+                  <button className="success-checkmark-button button-green">
+                    <img
+                      src="/checkmark.png"
+                      alt="Copied share link to clipboard"
+                    />
+                  </button>
+                  <div className="top-button-description text-green">
+                    Link copied to clipboard
+                  </div>
+                </>
+              )}
           </div>
           <div className="top-button-container">
             <button id="donate" onClick={handleDonateClick}>
