@@ -311,7 +311,7 @@ const Title = (props: TitleProps) => {
       id="title"
       className={props.warningFont ? "text-orange" : "text-white"}
       type="text"
-      maxLength={16}
+      maxLength={32}
       onChange={(e) => {
         props.handleTitleChange(e.target.value as string);
       }}
