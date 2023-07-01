@@ -33,7 +33,12 @@ const App = () => {
     )
       .then((response) => response.json())
       .then((data: ScheduleAPIResponse) => {
-        setMe(data.me);
+        if (data?.me) {
+          setMe(data.me);
+          if (data?.me?.name) {
+            setTitle(data.me.name);
+          }
+        }
         setSchedule(data.schedule);
       });
   };
@@ -144,6 +149,17 @@ const App = () => {
     setTitle(newTitle);
   };
 
+  const handleTitleSubmit = (newTitle: string) => {
+    fetch("https://planevent.me/api/name?name=" + newTitle, {
+      method: "POST",
+      credentials: "include",
+    }).then((response) => {
+      if (!response.ok)
+        throw new Error("Something went wrong when updating user name");
+      setTitle(newTitle);
+    });
+  };
+
   //   const showUsersList = (users: User[]) => {
   //     // TODO implement
   //     console.log(users);
@@ -173,6 +189,7 @@ const App = () => {
           warningFont={showShareError}
           title={title}
           handleTitleChange={handleTitleChange}
+          handleTitleSubmit={handleTitleSubmit}
         />
       </div>
       <DaySelector
@@ -199,6 +216,7 @@ interface TitleProps {
   warningFont: boolean;
   title: string;
   handleTitleChange: (title: string) => void;
+  handleTitleSubmit: (title: string) => void;
 }
 
 const Title = (props: TitleProps) => {
@@ -212,6 +230,7 @@ const Title = (props: TitleProps) => {
       onChange={(e) => {
         props.handleTitleChange(e.target.value as string);
       }}
+      onBlur={(e) => props.handleTitleSubmit(e.target.value as string)}
       onKeyUp={(e) => {
         if (e.key === "Enter") {
           const target = e.target as HTMLInputElement;
