@@ -20,13 +20,25 @@ export const MyTopButtons = (props: Props) => {
   }
 
   const handleMoveLineup = async () => {
-    navigator.clipboard.writeText(
+    let url =
       window.location.protocol +
+      "//" +
+      window.location.hostname +
+      "/move/" +
+      props.secretId;
+
+    if (process.env.REACT_APP_STAGE === "dev") {
+      url =
+        window.location.protocol +
         "//" +
         window.location.hostname +
+        ":" +
+        window.location.port +
         "/move/" +
-        props.secretId
-    );
+        props.secretId;
+    }
+
+    navigator.clipboard.writeText(url);
 
     setShowMovedSuccess(true);
     await timeout(2000);
@@ -39,13 +51,25 @@ export const MyTopButtons = (props: Props) => {
       return;
     }
 
-    navigator.clipboard.writeText(
+    let url =
       window.location.protocol +
+      "//" +
+      window.location.hostname +
+      "/shared/" +
+      props.shareId;
+
+    if (process.env.REACT_APP_STAGE === "dev") {
+      url =
+        window.location.protocol +
         "//" +
         window.location.hostname +
+        ":" +
+        window.location.port +
         "/shared/" +
-        props.shareId
-    );
+        props.shareId;
+    }
+
+    navigator.clipboard.writeText(url);
 
     setSharedSuccess(true);
     await timeout(2000);
