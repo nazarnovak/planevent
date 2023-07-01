@@ -14,6 +14,9 @@
 body {
   background-color: var(--black);
   font-size: calc(var(--font-size-base) * 3);
+  font-family: europa, sans-serif;
+  font-style: normal;
+  font-weight: 400;
   line-height: calc(var(--font-size-base) * 3);
   min-width: 320px;
   max-width: 1264px; /* as recommended by https://uxdesign.cc/responsive-layout-grid-guide-for-designers-c3ba7d161bdf */
