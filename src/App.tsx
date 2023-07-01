@@ -26,10 +26,14 @@ const App = () => {
 
   const [schedule, setSchedule] = useState([] as Schedule[]);
 
-  const fetchLatestSchedule = () => {
-    fetch("https://planevent.me/api/schedule", {
-      credentials: "include",
-    })
+  const fetchLatestSchedule = (sharedLineupID: string) => {
+    fetch(
+      "https://planevent.me/api/schedule" +
+        (sharedLineupID ? "/" + sharedLineupID : ""),
+      {
+        credentials: "include",
+      }
+    )
       .then((response) => response.json())
       .then((data: ScheduleAPIResponse) => {
         setMe(data.me);
@@ -67,9 +71,12 @@ const App = () => {
 
       if (subPaths[1] === "shared" && !!subPaths[2]) {
         setSharedLineupID(subPaths[2]);
+        fetchLatestSchedule(subPaths[2]);
+        // We don't need to fetch latest schedule or secret as when you view your own lineup
+        return;
       }
 
-      fetchLatestSchedule();
+      fetchLatestSchedule("");
       fetchSecret();
     };
 
@@ -118,7 +125,7 @@ const App = () => {
       if (!response.ok)
         throw new Error("Something went wrong when updating attendance");
     });
-    fetchLatestSchedule();
+    fetchLatestSchedule("");
   };
 
   function timeout(delay: number) {
