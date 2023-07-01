@@ -1,36 +1,6 @@
 import { useEffect, useState } from "react";
-
-interface Artist {
-  id: string;
-  artist: string;
-  attendees: string[];
-  attending: boolean;
-  timeStart: string;
-  timeEnd: string;
-}
-
-interface Stage {
-  stage: string;
-  artists: Artist[];
-}
-
-interface Day {
-  date: string;
-  weekDay: string;
-  stages: Stage[];
-}
-
-interface Schedule {
-  weekName: string;
-  weekNumber: number;
-  days: Day[];
-}
-
-interface ScheduleAPIResponse {
-  me: string;
-  owner: string;
-  schedule: Schedule[];
-}
+import { Artist, Schedule, ScheduleAPIResponse, User } from "./Dto";
+import { Timeline } from "./timeline/Timeline";
 
 const App = () => {
   const [secretUUID, setSecretUUID] = useState("");
@@ -209,8 +179,14 @@ const App = () => {
     });
   };
 
+  const showUsersList = (users:User[]) => {
+      // TODO implement
+      console.log(users);
+  }
+
   return (
     <div>
+      <Timeline schedule={schedule} onEventClick={showUsersList}/>
       <div id="top-buttons-container">
         <div id="top-buttons">
           <div className="top-button-container">

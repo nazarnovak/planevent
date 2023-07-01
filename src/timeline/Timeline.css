@@ -1,0 +1,34 @@
+.timeline_event {
+    margin:10px 20px 10px 20px;
+    padding:10px;
+    background-color:#faf9f8;
+}
+
+.timeline_location {
+    background-image: linear-gradient(90deg, #554cc7 0, #aa397e 100%);
+    padding:5px;
+    font-size:22px;
+}
+
+.timeline_time {
+    margin-top:5px;
+    color:#504f6d;
+    font-size:17px;
+    text-align:center;
+}
+
+.timeline_artist {
+    font-size:30px;
+    color:black;
+    text-align:center;
+}
+
+.timeline_title {
+    margin:20px 0px;
+}
+
+.timeline_with {
+    margin-top:2px;
+    color:black;
+    text-align:center;
+}
