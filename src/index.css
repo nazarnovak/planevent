@@ -320,6 +320,6 @@ background-clip: text;
 }
 
 .timeslot.attending > div {
-  background: #226622;
+  background: #006600;
   color: var(--white);
 }
