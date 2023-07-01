@@ -2,22 +2,19 @@ import { useEffect, useState } from "react";
 import { Artist, Schedule, ScheduleAPIResponse, User } from "./Dto";
 
 import { Loader } from "./Loader";
-import { Timeline } from "./timeline/Timeline";
+import { SharedTopButtons } from "./components/TopButtons/SharedTopButtons";
+
+// import { Timeline } from "./timeline/Timeline";
+
+import { MyTopButtons } from "./components/TopButtons/MyTopButtons";
 
 const App = () => {
   const [me, setMe] = useState<User>({ id: "", name: "" });
 
-  const [secretUUID, setSecretUUID] = useState("");
-
+  const [secretId, setSecretId] = useState("");
   const [sharedLineupID, setSharedLineupID] = useState("");
-  const [following, setFollowing] = useState(false);
 
-  const [showMoveCopiedToClipboard, setShowMoveCopiedToClipboard] =
-    useState(false);
   const [showShareError, setShowShareError] = useState(false);
-  const [showShareCopiedToClipboard, setShareCopiedToClipboard] =
-    useState(false);
-
   const [title, setTitle] = useState("Your name");
 
   const [currentWeek, setCurrentWeek] = useState(0);
@@ -47,7 +44,7 @@ const App = () => {
     })
       .then((response) => response.text())
       .then((body: string) => {
-        setSecretUUID(body);
+        setSecretId(body);
       });
   };
 
@@ -142,74 +139,15 @@ const App = () => {
     });
   };
 
-  function timeout(delay: number) {
-    return new Promise((res) => setTimeout(res, delay));
-  }
-
-  const handleMoveLineup = async () => {
-    navigator.clipboard.writeText(
-      window.location.protocol +
-        "//" +
-        window.location.hostname +
-        "/move/" +
-        secretUUID
-    );
-
-    setShowMoveCopiedToClipboard(true);
-    await timeout(2000);
-    setShowMoveCopiedToClipboard(false);
-  };
-
-  const handleShareLineup = async () => {
-    if (title === "Your name") {
-      setShowShareError(true);
-      return;
-    }
-
-    navigator.clipboard.writeText(
-      window.location.protocol +
-        "//" +
-        window.location.hostname +
-        "/shared/" +
-        me.id
-    );
-
-    setShareCopiedToClipboard(true);
-    await timeout(2000);
-    setShareCopiedToClipboard(false);
-  };
-
-  const handleDonateClick = () => {
-    window.open("https://buy.stripe.com/6oE7tu7UM3235dCeUU", "_blank");
-  };
-
   const handleTitleChange = (newTitle: string) => {
     setShowShareError(false);
     setTitle(newTitle);
   };
 
-  const handleMyLineup = () => {
-    window.location.href =
-      window.location.protocol + "//" + window.location.hostname + "/";
-  };
-
-  const handleFollowLineup = () => {
-    fetch("https://planevent.me/api/follow?publicId=" + sharedLineupID, {
-      method: "POST",
-      credentials: "include",
-    }).then((response) => {
-      if (!response.ok) {
-        throw new Error("Something went wrong when updating attendance");
-      }
-
-      setFollowing(true);
-    });
-  };
-
-  const showUsersList = (users: User[]) => {
-    // TODO implement
-    console.log(users);
-  };
+  //   const showUsersList = (users: User[]) => {
+  //     // TODO implement
+  //     console.log(users);
+  //   };
 
   if (schedule.length === 0) {
     return <Loader />;
@@ -217,125 +155,18 @@ const App = () => {
 
   return (
     <div>
-      <Timeline schedule={schedule} onEventClick={showUsersList} />
+      {/* <Timeline schedule={schedule} onEventClick={showUsersList} /> */}
       <div id="top-buttons-container">
-        <div id="top-buttons">
-          <div className="top-button-container">
-            {sharedLineupID !== "" && (
-              <>
-                <button
-                  id="my-schedule"
-                  className="button-black"
-                  onClick={handleMyLineup}
-                >
-                  <img src="/my-page.png" alt="My lineup" />
-                </button>
-                <div className="top-button-description">My lineup</div>
-              </>
-            )}
-            {sharedLineupID === "" && !showMoveCopiedToClipboard && (
-              <>
-                <button
-                  id="move-lineup"
-                  className="button-black"
-                  onClick={handleMoveLineup}
-                >
-                  <img
-                    src="/device.png"
-                    alt="Move lineup to a different device"
-                  />
-                </button>
-                <div className="top-button-description">
-                  Move lineup to a new device
-                </div>
-              </>
-            )}
-            {sharedLineupID === "" && showMoveCopiedToClipboard && (
-              <>
-                <button className="success-checkmark-button button-green">
-                  <img
-                    src="/checkmark.png"
-                    alt="Copied move link to clipboard"
-                  />
-                </button>
-                <div className="top-button-description text-green">
-                  Link copied to clipboard
-                  <br />
-                </div>
-              </>
-            )}
-          </div>
-          <div className="top-button-container">
-            {sharedLineupID !== "" && (
-              <>
-                <button
-                  id="my-schedule"
-                  className="button-black"
-                  onClick={handleFollowLineup}
-                >
-                  <img src="/plus.png" alt="Follow this lineup" />
-                </button>
-                {!following && (
-                  <div className="top-button-description">
-                    Follow this lineup
-                  </div>
-                )}
-                {following && (
-                  <div className="top-button-description">
-                    Unfollow this lineup
-                  </div>
-                )}
-              </>
-            )}
-            {sharedLineupID === "" && showShareError && (
-              <>
-                <button id="share-error" className="button-orange">
-                  <img src="/exclamation.png" alt="Please enter your name" />
-                </button>
-                <div className="top-button-description text-orange">
-                  Please enter your name
-                </div>
-              </>
-            )}
-            {sharedLineupID === "" &&
-              !showShareError &&
-              !showShareCopiedToClipboard && (
-                <>
-                  <button
-                    id="share-lineup"
-                    className="button-black"
-                    onClick={handleShareLineup}
-                  >
-                    <img src="/share.png" alt="Share lineup with others" />
-                  </button>
-                  <div className="top-button-description">
-                    Share lineup with others
-                  </div>
-                </>
-              )}
-            {sharedLineupID === "" &&
-              !showShareError &&
-              showShareCopiedToClipboard && (
-                <>
-                  <button className="success-checkmark-button button-green">
-                    <img
-                      src="/checkmark.png"
-                      alt="Copied share link to clipboard"
-                    />
-                  </button>
-                  <div className="top-button-description text-green">
-                    Link copied to clipboard
-                  </div>
-                </>
-              )}
-          </div>
-          <div className="top-button-container">
-            <button id="donate" onClick={handleDonateClick}>
-              <img src="/heart.png" alt="Donate" />
-            </button>
-            <div className="top-button-description">Donate</div>
-          </div>
-        </div>
+        {!sharedLineupID && (
+          <MyTopButtons
+            secretId={secretId}
+            shareId={me.id}
+            title={title}
+            showShareError={showShareError}
+            setShowShareError={setShowShareError}
+          />
+        )}
+        {sharedLineupID && <SharedTopButtons sharedLineupID={sharedLineupID} />}
       </div>
       <div id="title-and-edit-button">
         <Title
