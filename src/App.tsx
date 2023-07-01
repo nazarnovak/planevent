@@ -3,6 +3,8 @@ import { Artist, Schedule, ScheduleAPIResponse, User } from "./Dto";
 import { Timeline } from "./timeline/Timeline";
 
 const App = () => {
+  const [me, setMe] = useState<User>({ id: "", name: "" });
+
   const [secretUUID, setSecretUUID] = useState("");
 
   const [sharedLineupID, setSharedLineupID] = useState("");
@@ -28,6 +30,7 @@ const App = () => {
     })
       .then((response) => response.json())
       .then((data: ScheduleAPIResponse) => {
+        setMe(data.me);
         setSchedule(data.schedule);
       });
   };
@@ -139,12 +142,13 @@ const App = () => {
       setShowShareError(true);
       return;
     }
+
     navigator.clipboard.writeText(
       window.location.protocol +
         "//" +
         window.location.hostname +
         "/shared/" +
-        secretUUID
+        me.id
     );
 
     setShareCopiedToClipboard(true);
@@ -179,14 +183,14 @@ const App = () => {
     });
   };
 
-  const showUsersList = (users:User[]) => {
-      // TODO implement
-      console.log(users);
-  }
+  const showUsersList = (users: User[]) => {
+    // TODO implement
+    console.log(users);
+  };
 
   return (
     <div>
-      <Timeline schedule={schedule} onEventClick={showUsersList}/>
+      <Timeline schedule={schedule} onEventClick={showUsersList} />
       <div id="top-buttons-container">
         <div id="top-buttons">
           <div className="top-button-container">
