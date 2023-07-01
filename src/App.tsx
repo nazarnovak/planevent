@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Artist, Schedule, ScheduleAPIResponse, User } from "./Dto";
+
+import { Loader } from "./Loader";
 import { Timeline } from "./timeline/Timeline";
 
 const App = () => {
@@ -187,6 +189,10 @@ const App = () => {
     // TODO implement
     console.log(users);
   };
+
+  if (schedule.length === 0) {
+    return <Loader />;
+  }
 
   return (
     <div>
@@ -377,10 +383,6 @@ interface DaySelectorProps {
 }
 
 const DaySelector = (props: DaySelectorProps) => {
-  if (props.schedule.length === 0) {
-    return <div>Loading dates...</div>;
-  }
-
   return (
     <div>
       <div id="week-selector">
@@ -448,10 +450,6 @@ interface TodaysScheduleProps {
 }
 
 const TodaysSchedule = (props: TodaysScheduleProps) => {
-  if (props.schedule.length === 0) {
-    return <div>Loading artists...</div>;
-  }
-
   return (
     <div id="schedule">
       <div id="timeslot-header">
