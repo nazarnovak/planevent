@@ -109,6 +109,7 @@ const App = () => {
   };
 
   const updateAttendanceStatus = (
+    key: number,
     slotId: string,
     newAttendingStatus: boolean
   ) => {
@@ -124,8 +125,21 @@ const App = () => {
     ).then((response) => {
       if (!response.ok)
         throw new Error("Something went wrong when updating attendance");
+      // Weird hack to rewrite the schedule in state in the specific artist key :/
+      let tempSchedule = [...schedule];
+      if (
+        tempSchedule[currentWeek] &&
+        tempSchedule[currentWeek]?.days[currentDay] &&
+        tempSchedule[currentWeek]?.days[currentDay]?.stages[currentStage] &&
+        tempSchedule[currentWeek]?.days[currentDay]?.stages[currentStage]
+          .artists[key]
+      ) {
+        tempSchedule[currentWeek].days[currentDay].stages[currentStage].artists[
+          key
+        ].attending = newAttendingStatus;
+        setSchedule(tempSchedule);
+      }
     });
-    fetchLatestSchedule("");
   };
 
   function timeout(delay: number) {
@@ -453,7 +467,11 @@ const DaySelector = (props: DaySelectorProps) => {
 
 interface TodaysScheduleProps {
   schedule: Artist[];
-  updateAttendanceStatus: (slotId: string, newAttendingStatus: boolean) => void;
+  updateAttendanceStatus: (
+    key: number,
+    slotId: string,
+    newAttendingStatus: boolean
+  ) => void;
 }
 
 const TodaysSchedule = (props: TodaysScheduleProps) => {
@@ -473,7 +491,7 @@ const TodaysSchedule = (props: TodaysScheduleProps) => {
             key={slot.id}
             className={`timeslot` + (slot.attending ? " attending" : "")}
             onClick={() =>
-              props.updateAttendanceStatus(slot.id, !slot.attending)
+              props.updateAttendanceStatus(i, slot.id, !slot.attending)
             }
           >
             <div className="timeslot-sides">
