@@ -22,6 +22,7 @@ const App = () => {
   const [currentDay, setCurrentDay] = useState(0);
   const [currentStage, setCurrentStage] = useState(0);
 
+  const [modalArtistInfo, setModalArtistInfo] = useState({} as Artist);
   const [schedule, setSchedule] = useState([] as Schedule[]);
 
   const fetchLatestSchedule = (sharedLineupID: string) => {
@@ -214,13 +215,60 @@ const App = () => {
         changeDay={changeDay}
         changeStage={changeStage}
       />
+      <FollowingModal
+        modalArtistInfo={modalArtistInfo}
+        onClose={() => {
+          setModalArtistInfo({} as Artist);
+        }}
+      />
       <TodaysSchedule
         schedule={
           schedule[currentWeek]?.days[currentDay]?.stages[currentStage]
             ?.artists || []
         }
         updateAttendanceStatus={updateAttendanceStatus}
+        setModalArtistInfo={setModalArtistInfo}
       />
+    </div>
+  );
+};
+
+interface FollowingModalProps {
+  modalArtistInfo: Artist;
+  onClose: () => void;
+}
+
+const FollowingModal = (props: FollowingModalProps) => {
+  if (!Object.keys(props.modalArtistInfo).length) {
+    return null;
+  }
+
+  return (
+    <div className="backdrop" onClick={props.onClose}>
+      <div className="modal">
+        <div className="modal-header">
+          <div className="modal-header-title">You're going to</div>
+          <div className="modal-X" onClick={props.onClose}>
+            X
+          </div>
+        </div>
+        <div className="report-body">
+          Artist: {props.modalArtistInfo.artist}
+          <br />
+          At: {props.modalArtistInfo.timeStart}
+          <br />
+          Joining you:
+          <br />
+          <ul>
+            {props.modalArtistInfo?.attendees?.map((attender) => {
+              return <li>{attender.name}</li>;
+            })}
+          </ul>
+        </div>
+        <div className="footer" onClick={props.onClose}>
+          Close
+        </div>
+      </div>
     </div>
   );
 };
@@ -337,6 +385,7 @@ interface TodaysScheduleProps {
     slotId: string,
     newAttendingStatus: boolean
   ) => void;
+  setModalArtistInfo: (artist: Artist) => void;
 }
 
 const TodaysSchedule = (props: TodaysScheduleProps) => {
@@ -376,10 +425,14 @@ const TodaysSchedule = (props: TodaysScheduleProps) => {
             <div
               className="timeslot-followers"
               onClick={() => {
-                alert("Followers:" + slot.attendees);
+                if (slot.attendees.length === 0) {
+                  return null;
+                }
+
+                props.setModalArtistInfo(slot);
               }}
             >
-              4
+              {slot.attendees.length}
             </div>
           </div>
         );

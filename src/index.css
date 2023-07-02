@@ -472,3 +472,47 @@ body {
   background: #006600;
   color: var(--white);
 }
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 11;
+}
+
+.modal {
+  background-color: #000;
+  height: 100%;
+  width: 100%;
+  border-radius: unset;
+  z-index: 12;
+}
+
+.modal-header {
+  display: flex;
+}
+
+.modal-header-title {
+  flex-basis: 90%;
+  text-align: center;
+}
+
+.modal-X {
+  flex-basis: 10%;
+}
+
+ul {
+  list-style-type: circle;
+}
+
+/* for bigger screens
+width: 544px;
+height: 376px;
+border-radius: 20px;
+border: 1px solid white;*/
