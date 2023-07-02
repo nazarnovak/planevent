@@ -236,6 +236,18 @@ body {
   padding: calc(var(--font-size-base) * 2);
 }
 
+@media (min-width: 0px) and (max-width: 320px) {
+  .week {
+    padding: calc(var(--font-size-base) * 1);
+  }
+}
+
+@media (min-width: 321px) and (max-width: 655px) {
+  .week {
+    padding: calc(var(--font-size-base) * 1);
+  }
+}
+
 .active {
   background-color: var(--white);
   color: var(--black);
@@ -254,6 +266,18 @@ body {
   padding: calc(var(--font-size-base) * 2) calc(var(--font-size-base) * 1);
 }
 
+@media (min-width: 0px) and (max-width: 320px) {
+  .day {
+    padding: calc(var(--font-size-base) * 1);
+  }
+}
+
+@media (min-width: 321px) and (max-width: 655px) {
+  .day {
+    padding: calc(var(--font-size-base) * 1);
+  }
+}
+
 #stage-selector {
   display: flex;
   justify-content: space-between;
@@ -266,7 +290,20 @@ body {
   padding: calc(var(--font-size-base) * 2) calc(var(--font-size-base) * 1);
 }
 
+@media (min-width: 0px) and (max-width: 320px) {
+  .stage-item {
+    padding: calc(var(--font-size-base) * 1);
+  }
+}
+
+@media (min-width: 321px) and (max-width: 655px) {
+  .stage-item {
+    padding: calc(var(--font-size-base) * 1);
+  }
+}
+
 .stage-previous-next {
+  user-select: none;
   flex-basis: 10%;
 }
 
