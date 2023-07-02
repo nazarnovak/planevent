@@ -328,8 +328,10 @@ const TodaysSchedule = (props: TodaysScheduleProps) => {
   return (
     <div id="schedule">
       <div id="timeslot-header">
-        <div className="timeslot-time">Time</div>
-        <div className="timeslot-artist">Artist</div>
+        <div className="timeslot-time-artist">
+          <div className="timeslot-time">Time</div>
+          <div className="timeslot-artist">Artist</div>
+        </div>
         <div className="timeslot-followers">Followers</div>
       </div>
       {props.schedule.map((slot: Artist, i: number) => {
@@ -337,23 +339,33 @@ const TodaysSchedule = (props: TodaysScheduleProps) => {
         const hourEnd = new Date(Date.parse(slot.timeEnd));
 
         return (
-          <div
-            key={slot.id}
-            className={`timeslot` + (slot.attending ? " attending" : "")}
-            onClick={() =>
-              props.updateAttendanceStatus(i, slot.id, !slot.attending)
-            }
-          >
-            <div className="timeslot-time">
-              {(hourStart.getHours() < 10 ? "0" : "") + hourStart.getHours()}:
-              {(hourStart.getMinutes() < 10 ? "0" : "") +
-                hourStart.getMinutes()}
-              <br />
-              {(hourEnd.getHours() < 10 ? "0" : "") + hourEnd.getHours()}:
-              {(hourEnd.getMinutes() < 10 ? "0" : "") + hourEnd.getMinutes()}{" "}
+          <div key={slot.id} className="timeslot">
+            <div
+              className={
+                "timeslot-time-artist" + (slot.attending ? " attending" : "")
+              }
+              onClick={() =>
+                props.updateAttendanceStatus(i, slot.id, !slot.attending)
+              }
+            >
+              <div className="timeslot-time">
+                {(hourStart.getHours() < 10 ? "0" : "") + hourStart.getHours()}:
+                {(hourStart.getMinutes() < 10 ? "0" : "") +
+                  hourStart.getMinutes()}
+                <br />
+                {(hourEnd.getHours() < 10 ? "0" : "") + hourEnd.getHours()}:
+                {(hourEnd.getMinutes() < 10 ? "0" : "") + hourEnd.getMinutes()}{" "}
+              </div>
+              <div className="timeslot-artist">{slot.artist}</div>
             </div>
-            <div className="timeslot-artist">{slot.artist}</div>
-            <div className="timeslot-followers">4</div>
+            <div
+              className="timeslot-followers"
+              onClick={() => {
+                alert("Followers:" + slot.attendees);
+              }}
+            >
+              4
+            </div>
           </div>
         );
       })}

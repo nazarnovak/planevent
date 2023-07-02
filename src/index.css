@@ -251,9 +251,7 @@ body {
     padding: calc(var(--font-size-base) * 1);
   }
 }
-display: flex;
-justify-content: center;
-align-items: center;
+
 .active {
   background-color: var(--white);
   color: var(--black);
@@ -318,7 +316,25 @@ align-items: center;
 }
 
 #schedule {
-  margin-top: calc(var(--font-size-base) * 2);
+  margin-top: calc(var(--font-size-base) * 4);
+}
+
+@media (min-width: 0px) and (max-width: 320px) {
+  #schedule {
+    margin-top: calc(var(--font-size-base) * 3);
+  }
+}
+
+@media (min-width: 321px) and (max-width: 655px) {
+  #schedule {
+    margin-top: calc(var(--font-size-base) * 3);
+  }
+}
+
+@media (min-width: 656px) and (max-width: 1023px) {
+  #schedule {
+    margin-top: calc(var(--font-size-base) * 3);
+  }
 }
 
 #schedule > div:last-child {
@@ -333,16 +349,40 @@ align-items: center;
   border-bottom: 2px solid var(--black);
 }
 
+.timeslot {
+  display: flex;
+  border-bottom: 2px solid var(--black);
+  transition: 0.2s all;
+}
+
+.timeslot-time-artist {
+  flex-basis: 90%;
+  display: flex;
+}
+
+.timeslot > .timeslot-time-artist {
+  background: var(--white);
+}
+
+.timeslot > .timeslot-followers {
+  background: #aa397e;
+}
+
+.timeslot > .timeslot-followers:hover {
+  background: #8a194e;
+}
+
 .timeslot-time {
-  flex-basis: 10%;
+  flex-basis: 12%;
   padding: calc(var(--font-size-base) * 2);
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 
 .timeslot-artist {
-  flex-basis: 80%;
+  flex-basis: 88%;
   padding: calc(var(--font-size-base) * 2);
   border-left: 2px solid black;
   border-right: 2px solid black;
@@ -350,6 +390,7 @@ align-items: center;
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 
 .timeslot-followers {
@@ -359,15 +400,16 @@ align-items: center;
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 
 @media (min-width: 0px) and (max-width: 320px) {
   .timeslot-time {
-    flex-basis: 15%;
+    flex-basis: 17%;
     padding: calc(var(--font-size-base) * 1);
   }
   .timeslot-artist {
-    flex-basis: 75%;
+    flex-basis: 83%;
     padding: calc(var(--font-size-base) * 1);
   }
   .timeslot-followers {
@@ -377,11 +419,11 @@ align-items: center;
 
 @media (min-width: 321px) and (max-width: 655px) {
   .timeslot-time {
-    flex-basis: 15%;
+    flex-basis: 17%;
     padding: calc(var(--font-size-base) * 1);
   }
   .timeslot-artist {
-    flex-basis: 75%;
+    flex-basis: 83%;
     padding: calc(var(--font-size-base) * 1);
   }
   .timeslot-followers {
@@ -391,45 +433,34 @@ align-items: center;
 
 @media (min-width: 656px) and (max-width: 1023px) {
   .timeslot-time {
-    flex-basis: 10%;
+    flex-basis: 17%;
   }
   .timeslot-artist {
-    flex-basis: 80%;
+    flex-basis: 83%;
   }
 }
 
-@media (min-width: 1024px) and (max-width: 1392px) {
-  .timeslot-time {
-    flex-basis: 10%;
-  }
-  .timeslot-artist {
-    flex-basis: 80%;
-  }
-}
-
-.timeslot {
-  display: flex;
-  background: var(--white);
-  color: var(--black);
-  border-bottom: 2px solid var(--black);
-  transition: 0.2s all;
-}
-
-.timeslot > div {
+.timeslot > .timeslot-time-artist > .timeslot-time,
+.timeslot > .timeslot-time-artist > .timeslot-artist {
   color: var(--black);
 }
 
-.timeslot:hover > div {
+.timeslot > .timeslot-time-artist.attending > .timeslot-time,
+.timeslot > .timeslot-time-artist.attending > .timeslot-artist {
+  color: var(--white);
+}
+
+.timeslot > .timeslot-time-artist:hover {
   background-color: #66ee66;
   color: var(--black);
   transition: 0.3s all;
 }
 
-.timeslot.attending:hover > div {
+.timeslot > .timeslot-time-artist.attending:hover {
   background-color: #33aa33;
 }
 
-.timeslot.attending > div {
+.timeslot > .timeslot-time-artist.attending {
   background: #006600;
   color: var(--white);
 }
