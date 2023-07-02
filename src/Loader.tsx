@@ -3,7 +3,7 @@ export const Loader = () => {
     <div
       style={{
         position: "absolute",
-        left: "calc(50% - 88px)",
+        left: "calc(50% - 78px)",
         top: "calc(50% - 62px)",
       }}
     >

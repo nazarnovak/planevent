@@ -251,7 +251,9 @@ body {
     padding: calc(var(--font-size-base) * 1);
   }
 }
-
+display: flex;
+justify-content: center;
+align-items: center;
 .active {
   background-color: var(--white);
   color: var(--black);
@@ -328,28 +330,81 @@ body {
   color: var(--white);
   background-image: linear-gradient(90deg, #554cc7 0, #aa397e 100%);
   font-weight: bold;
+  border-bottom: 2px solid var(--black);
 }
 
 .timeslot-time {
-  flex-basis: 15%;
-  padding: calc(var(--font-size-base) * 1);
-  text-align: center;
+  flex-basis: 10%;
+  padding: calc(var(--font-size-base) * 2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .timeslot-artist {
-  flex-basis: 75%;
-  padding: calc(var(--font-size-base) * 1);
+  flex-basis: 80%;
+  padding: calc(var(--font-size-base) * 2);
   border-left: 2px solid black;
   border-right: 2px solid black;
-  text-align: center;
   word-break: break-all;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .timeslot-followers {
   flex-basis: 10%;
-  padding: calc(var(--font-size-base) * 1);
-  text-align: center;
+  padding: calc(var(--font-size-base) * 2);
   word-break: break-all;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (min-width: 0px) and (max-width: 320px) {
+  .timeslot-time {
+    flex-basis: 15%;
+    padding: calc(var(--font-size-base) * 1);
+  }
+  .timeslot-artist {
+    flex-basis: 75%;
+    padding: calc(var(--font-size-base) * 1);
+  }
+  .timeslot-followers {
+    padding: calc(var(--font-size-base) * 1);
+  }
+}
+
+@media (min-width: 321px) and (max-width: 655px) {
+  .timeslot-time {
+    flex-basis: 15%;
+    padding: calc(var(--font-size-base) * 1);
+  }
+  .timeslot-artist {
+    flex-basis: 75%;
+    padding: calc(var(--font-size-base) * 1);
+  }
+  .timeslot-followers {
+    padding: calc(var(--font-size-base) * 1);
+  }
+}
+
+@media (min-width: 656px) and (max-width: 1023px) {
+  .timeslot-time {
+    flex-basis: 10%;
+  }
+  .timeslot-artist {
+    flex-basis: 80%;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1392px) {
+  .timeslot-time {
+    flex-basis: 10%;
+  }
+  .timeslot-artist {
+    flex-basis: 80%;
+  }
 }
 
 .timeslot {
