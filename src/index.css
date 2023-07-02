@@ -162,6 +162,14 @@ body {
   }
 }
 
+#minus-image {
+  height: calc(var(--font-size-base) * 1);
+}
+
+.minus-button {
+  background-color: #fff;
+}
+
 #share-buttons-overlay {
   z-index: 2;
   position: absolute;
@@ -365,11 +373,11 @@ body {
 }
 
 .timeslot > .timeslot-followers {
-  background: #aa397e;
+  background: #333;
 }
 
 .timeslot > .timeslot-followers:hover {
-  background: #8a194e;
+  background: #666;
 }
 
 .timeslot-time {

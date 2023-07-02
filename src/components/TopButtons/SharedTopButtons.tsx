@@ -1,17 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { DonateButton } from "./DonateButton/DonateButton";
 
 interface Props {
   sharedLineupID: string;
+  following: boolean;
 }
 
 export const SharedTopButtons = (props: Props) => {
   const [following, setFollowing] = useState(false);
 
+  useEffect(() => {
+    setFollowing(props.following);
+  }, [props.following]);
+
   const handleMyLineupClick = () => {
-    window.location.href =
-      window.location.protocol + "//" + window.location.hostname + "/";
+    let url = window.location.protocol + "//" + window.location.hostname + "/";
+    if (process.env.REACT_APP_STAGE === "dev") {
+      url =
+        window.location.protocol +
+        "//" +
+        window.location.hostname +
+        ":" +
+        window.location.port +
+        "/";
+    }
+    window.location.href = url;
   };
 
   // TODO: How to see if I follow this person or not the first time I load this page?
@@ -45,9 +59,9 @@ export const SharedTopButtons = (props: Props) => {
             className="button-black"
             onClick={handleMyLineupClick}
           >
-            <img src="/my-page.png" alt="My lineup" />
+            <img src="/my-page.png" alt="Create my lineup" />
           </button>
-          <div className="top-button-description">My lineup</div>
+          <div className="top-button-description">Create my lineup</div>
         </div>
         <div className="top-button-container">
           {!following && (
@@ -66,10 +80,14 @@ export const SharedTopButtons = (props: Props) => {
             <>
               <button
                 id="my-schedule"
-                className="button-black"
+                className="button-black minus-button"
                 onClick={() => handleFollowLineup(false)}
               >
-                <img src="/plus.png" alt="Stop follow this lineup" />
+                <img
+                  id="minus-image"
+                  src="/minus.png"
+                  alt="Stop follow this lineup"
+                />
               </button>
               <div className="top-button-description">
                 Stop following this lineup

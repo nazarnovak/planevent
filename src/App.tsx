@@ -9,7 +9,8 @@ import { SharedTopButtons } from "./components/TopButtons/SharedTopButtons";
 import { MyTopButtons } from "./components/TopButtons/MyTopButtons";
 
 const App = () => {
-  const [me, setMe] = useState<User>({ id: "", name: "" });
+  const [me, setMe] = useState<User>({ id: "", name: "", following: [] });
+  const [owner, setOwner] = useState<User>({ id: "", name: "", following: [] });
 
   const [secretId, setSecretId] = useState("");
   const [sharedLineupID, setSharedLineupID] = useState("");
@@ -35,10 +36,16 @@ const App = () => {
       .then((data: ScheduleAPIResponse) => {
         if (data?.me) {
           setMe(data.me);
-          if (data?.me?.name) {
-            setTitle(data.me.name);
-          }
         }
+        if (data?.owner) {
+          setOwner(data.owner);
+        }
+        if (sharedLineupID && data?.owner?.name) {
+          setTitle(data.owner.name);
+        } else if (data?.owner?.name) {
+          setTitle(data.me.name);
+        }
+
         setSchedule(data.schedule);
       });
   };
@@ -182,7 +189,12 @@ const App = () => {
             setShowShareError={setShowShareError}
           />
         )}
-        {sharedLineupID && <SharedTopButtons sharedLineupID={sharedLineupID} />}
+        {sharedLineupID && (
+          <SharedTopButtons
+            sharedLineupID={sharedLineupID}
+            following={!!me.following.find((id) => id === owner.id)}
+          />
+        )}
       </div>
       <div id="title-and-edit-button">
         <Title
@@ -190,6 +202,7 @@ const App = () => {
           title={title}
           handleTitleChange={handleTitleChange}
           handleTitleSubmit={handleTitleSubmit}
+          sharedSchedule={!!sharedLineupID}
         />
       </div>
       <DaySelector
@@ -217,6 +230,7 @@ interface TitleProps {
   title: string;
   handleTitleChange: (title: string) => void;
   handleTitleSubmit: (title: string) => void;
+  sharedSchedule: boolean;
 }
 
 const Title = (props: TitleProps) => {
@@ -238,6 +252,7 @@ const Title = (props: TitleProps) => {
           target.blur();
         }
       }}
+      disabled={props.sharedSchedule ? true : false}
       value={props.title}
     />
   );

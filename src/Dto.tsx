@@ -25,8 +25,9 @@ export interface Schedule {
 }
 
 export interface User {
-    name:string,
-    id:string
+  name: string;
+  id: string;
+  following: string[];
 }
 
 export interface ScheduleAPIResponse {
