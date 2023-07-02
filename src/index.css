@@ -23,6 +23,30 @@ body {
   margin: 0 auto;
 }
 
+@media (min-width: 0px) and (max-width: 320px) {
+  body {
+    padding: 0 calc(var(--font-size-base) * 1);
+  }
+}
+
+@media (min-width: 321px) and (max-width: 655px) {
+  body {
+    padding: 0 calc(var(--font-size-base) * 1);
+  }
+}
+
+@media (min-width: 656px) and (max-width: 1023px) {
+  body {
+    padding: 0 calc(var(--font-size-base) * 2);
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1392px) {
+  body {
+    padding: 0 calc(var(--font-size-base) * 4);
+  }
+}
+
 #title {
   font-size: calc(var(--font-size-base) * 5);
   line-height: calc(var(--font-size-base) * 5);
@@ -34,30 +58,16 @@ body {
 }
 
 @media (min-width: 0px) and (max-width: 320px) {
-  body {
-    padding: 0 calc(var(--font-size-base) * 1);
+  #title {
+    font-size: calc(var(--font-size-base) * 3);
+    line-height: calc(var(--font-size-base) * 3);
   }
 }
 
 @media (min-width: 321px) and (max-width: 655px) {
-  body {
-    padding: 0 calc(var(--font-size-base) * 2);
-  }
   #title {
-    font-size: calc(var(--font-size-base) * 4);
-    line-height: calc(var(--font-size-base) * 4);
-  }
-}
-
-@media (min-width: 656px) and (max-width: 1023px) {
-  body {
-    padding: 0 calc(var(--font-size-base) * 5);
-  }
-}
-
-@media (min-width: 1024px) and (max-width: 1392px) {
-  body {
-    padding: 0 calc(var(--font-size-base) * 8);
+    font-size: calc(var(--font-size-base) * 3);
+    line-height: calc(var(--font-size-base) * 3);
   }
 }
 
@@ -134,6 +144,20 @@ body {
   line-height: calc(var(--font-size-base) * 2);
 }
 
+@media (min-width: 0px) and (max-width: 320px) {
+  .top-button-description {
+    font-size: calc(var(--font-size-base) * 1.5);
+    line-height: calc(var(--font-size-base) * 1.5);
+  }
+}
+
+@media (min-width: 321px) and (max-width: 655px) {
+  .top-button-description {
+    font-size: calc(var(--font-size-base) * 1.5);
+    line-height: calc(var(--font-size-base) * 1.5);
+  }
+}
+
 #share-buttons-overlay {
   z-index: 2;
   position: absolute;
@@ -184,6 +208,20 @@ body {
   line-height: calc(var(--font-size-base) * 3);
   cursor: pointer;
   font-weight: bold;
+}
+
+@media (min-width: 0px) and (max-width: 320px) {
+  .week-day-stage-item {
+    font-size: calc(var(--font-size-base) * 2);
+    line-height: calc(var(--font-size-base) * 2);
+  }
+}
+
+@media (min-width: 321px) and (max-width: 655px) {
+  .week-day-stage-item {
+    font-size: calc(var(--font-size-base) * 2);
+    line-height: calc(var(--font-size-base) * 2);
+  }
 }
 
 #week-selector {

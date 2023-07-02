@@ -3,8 +3,8 @@ export const Loader = () => {
     <div
       style={{
         position: "absolute",
-        left: "calc(50% - 50px",
-        top: "calc(50% - 50px",
+        left: "calc(50% - 88px)",
+        top: "calc(50% - 62px)",
       }}
     >
       <svg
