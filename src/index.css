@@ -419,11 +419,14 @@ align-items: center;
   color: var(--black);
 }
 
-.timeslot:hover > div,
-.timeslot.attending:hover > div {
+.timeslot:hover > div {
   background-color: #66ee66;
   color: var(--black);
   transition: 0.3s all;
+}
+
+.timeslot.attending:hover > div {
+  background-color: #33aa33;
 }
 
 .timeslot.attending > div {
