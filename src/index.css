@@ -294,7 +294,7 @@ background-clip: text;
 
 .timeslot:hover > div,
 .timeslot.attending:hover > div {
-  background-color: #00cc00;
+  background-color: #66ee66;
   color: #000;
   transition: 0.3s all;
 }

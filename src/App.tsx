@@ -348,7 +348,8 @@ const TodaysSchedule = (props: TodaysScheduleProps) => {
               {(hourStart.getHours() < 10 ? "0" : "") + hourStart.getHours()}:
               {(hourStart.getMinutes() < 10 ? "0" : "") +
                 hourStart.getMinutes()}
-              -{(hourEnd.getHours() < 10 ? "0" : "") + hourEnd.getHours()}:
+              <br />
+              {(hourEnd.getHours() < 10 ? "0" : "") + hourEnd.getHours()}:
               {(hourEnd.getMinutes() < 10 ? "0" : "") + hourEnd.getMinutes()}{" "}
             </div>
             <div className="timeslot-artist">{slot.artist}</div>
