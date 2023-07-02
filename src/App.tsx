@@ -328,9 +328,9 @@ const TodaysSchedule = (props: TodaysScheduleProps) => {
   return (
     <div id="schedule">
       <div id="timeslot-header">
-        <div>Time</div>
-        <div>Artist</div>
-        <div>Attendees</div>
+        <div className="timeslot-time">Time</div>
+        <div className="timeslot-artist">Artist</div>
+        <div className="timeslot-followers">Followers</div>
       </div>
       {props.schedule.map((slot: Artist, i: number) => {
         const hourStart = new Date(Date.parse(slot.timeStart));
@@ -344,7 +344,7 @@ const TodaysSchedule = (props: TodaysScheduleProps) => {
               props.updateAttendanceStatus(i, slot.id, !slot.attending)
             }
           >
-            <div className="timeslot-sides">
+            <div className="timeslot-time">
               {(hourStart.getHours() < 10 ? "0" : "") + hourStart.getHours()}:
               {(hourStart.getMinutes() < 10 ? "0" : "") +
                 hourStart.getMinutes()}
@@ -353,7 +353,7 @@ const TodaysSchedule = (props: TodaysScheduleProps) => {
               {(hourEnd.getMinutes() < 10 ? "0" : "") + hourEnd.getMinutes()}{" "}
             </div>
             <div className="timeslot-artist">{slot.artist}</div>
-            <div className="timeslot-sides">4</div>
+            <div className="timeslot-followers">4</div>
           </div>
         );
       })}

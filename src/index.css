@@ -13,10 +13,10 @@
 
 body {
   background-color: var(--black);
-  font-size: calc(var(--font-size-base) * 3);
   font-family: europa, sans-serif;
   font-style: normal;
   font-weight: 400;
+  font-size: calc(var(--font-size-base) * 3);
   line-height: calc(var(--font-size-base) * 3);
   min-width: 320px;
   max-width: 1264px; /* as recommended by https://uxdesign.cc/responsive-layout-grid-guide-for-designers-c3ba7d161bdf */
@@ -26,12 +26,16 @@ body {
 @media (min-width: 0px) and (max-width: 320px) {
   body {
     padding: 0 calc(var(--font-size-base) * 1);
+    font-size: calc(var(--font-size-base) * 2);
+    line-height: calc(var(--font-size-base) * 2);
   }
 }
 
 @media (min-width: 321px) and (max-width: 655px) {
   body {
     padding: 0 calc(var(--font-size-base) * 1);
+    font-size: calc(var(--font-size-base) * 2);
+    line-height: calc(var(--font-size-base) * 2);
   }
 }
 
@@ -324,25 +328,28 @@ body {
   color: var(--white);
   background-image: linear-gradient(90deg, #554cc7 0, #aa397e 100%);
   font-weight: bold;
-  /* border-top: 1px solid #666;
-  border-right: 1px solid #666;
-  border-left: 1px solid #666; */
 }
 
-#timeslot-header > div:first-child,
-#timeslot-header > div:last-child {
-  flex-basis: 10%;
-}
-
-#timeslot-header > div {
-  flex-basis: 80%;
-  padding: calc(var(--font-size-base) * 2) calc(var(--font-size-base) * 1);
-  border-right: 2px solid black;
+.timeslot-time {
+  flex-basis: 15%;
+  padding: calc(var(--font-size-base) * 1);
   text-align: center;
 }
 
-#timeslot-header > div:last-child {
-  border-right: none;
+.timeslot-artist {
+  flex-basis: 75%;
+  padding: calc(var(--font-size-base) * 1);
+  border-left: 2px solid black;
+  border-right: 2px solid black;
+  text-align: center;
+  word-break: break-all;
+}
+
+.timeslot-followers {
+  flex-basis: 10%;
+  padding: calc(var(--font-size-base) * 1);
+  text-align: center;
+  word-break: break-all;
 }
 
 .timeslot {
@@ -351,47 +358,17 @@ body {
   color: var(--black);
   border-bottom: 2px solid var(--black);
   transition: 0.2s all;
-  /* border-left: 1px solid var(--white);
-  border-right: 1px solid var(--white); */
 }
 
-/* .timeslot:hover {
-  border-left: 1px solid #00dd00;
-  border-right: 1px solid #00dd00;
-} */
-
-/* Tomorrowland gradient font */
-/* background-image: linear-gradient(90deg,#554cc7 0,#aa397e 100%);
-color: #932b6a;
--webkit-background-clip: text;
-background-clip: text;
--webkit-text-fill-color: transparent; */
+.timeslot > div {
+  color: var(--black);
+}
 
 .timeslot:hover > div,
 .timeslot.attending:hover > div {
   background-color: #66ee66;
-  color: #000;
-  transition: 0.3s all;
-}
-
-.timeslot > div {
-  border-right: 2px solid var(--black);
-  padding: calc(var(--font-size-base) * 2) calc(var(--font-size-base) * 1);
   color: var(--black);
-}
-
-.timeslot > div:last-child {
-  border-right: none;
-}
-
-.timeslot-sides {
-  flex-basis: 10%;
-  word-break: break-all;
-  text-align: center;
-}
-
-.timeslot-artist {
-  flex-basis: 80%;
+  transition: 0.3s all;
 }
 
 .timeslot.attending > div {
