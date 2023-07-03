@@ -488,31 +488,89 @@ body {
 
 .modal {
   background-color: #000;
-  height: 100%;
-  width: 100%;
-  border-radius: unset;
+  border-radius: 20px;
+  grid-template-columns:
+    calc(var(--font-size-base) * 8) calc(var(--font-size-base) * 38)
+    calc(var(--font-size-base) * 4);
+  width: calc(var(--font-size-base) * 70);
+  height: calc(var(--font-size-base) * 50);
   z-index: 12;
+  border: 1px solid white;
+}
+
+@media only screen and (max-width: 767px) {
+  .modal {
+    height: 100%;
+    width: 100%;
+    border-radius: unset;
+    border: none;
+  }
 }
 
 .modal-header {
+  height: calc(var(--font-size-base) * 8);
+  border-bottom: 1px solid #fff;
   display: flex;
+  grid-template-rows:
+    calc(var(--font-size-base) * 8) auto
+    calc(var(--font-size-base) * 8);
+  z-index: 13;
 }
 
 .modal-header-title {
-  flex-basis: 90%;
+  display: grid;
   text-align: center;
+  align-items: center;
+  width: 100%;
+  color: #fff;
+  font-size: calc(var(--font-size-base) * 3);
+  line-height: calc(var(--font-size-base) * 3);
+  font-weight: 600;
 }
 
-.modal-X {
-  flex-basis: 10%;
+.modal-header-side {
+  height: calc(var(--font-size-base) * 8);
+  width: calc(var(--font-size-base) * 8);
+}
+
+.modal-x {
+  height: calc(var(--font-size-base) * 3);
+  width: calc(var(--font-size-base) * 3);
+  padding: calc(var(--font-size-base) * 2.5);
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: calc(var(--font-size-base) * 2);
+  width: calc(100% - calc(var(--font-size-base) * 4));
+  height: calc(var(--font-size-base) * 32 - 2px);
+  font-size: calc(var(--font-size-base) * 3);
+  line-height: calc(var(--font-size-base) * 3);
+  overflow: hidden;
+  overflow-y: scroll;
+  border-bottom: 1px solid white;
+}
+
+.modal-footer {
+  height: calc(var(--font-size-base) * 6);
+  display: grid;
+  text-align: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.going {
+  color: #3a3;
+}
+
+.not-going {
+  color: #a33;
 }
 
 ul {
-  list-style-type: circle;
+  list-style-type: disc;
 }
 
-/* for bigger screens
-width: 544px;
-height: 376px;
-border-radius: 20px;
-border: 1px solid white;*/
+li {
+  margin-left: calc(var(--font-size-base) * 3);
+}

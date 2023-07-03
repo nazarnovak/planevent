@@ -8,6 +8,8 @@ import { SharedTopButtons } from "./components/TopButtons/SharedTopButtons";
 
 import { MyTopButtons } from "./components/TopButtons/MyTopButtons";
 
+import X from "./images/x.svg";
+
 const App = () => {
   const [me, setMe] = useState<User>({ id: "", name: "", following: [] });
   const [owner, setOwner] = useState<User>({ id: "", name: "", following: [] });
@@ -218,8 +220,14 @@ const App = () => {
       <FollowingModal
         modalArtistInfo={modalArtistInfo}
         onClose={() => {
+          // Hack to hide scrollbar
+          document.body.style.overflow = "auto";
           setModalArtistInfo({} as Artist);
         }}
+        currentStage={
+          schedule[currentWeek]?.days[currentDay]?.stages[currentStage]
+            ?.stage || ""
+        }
       />
       <TodaysSchedule
         schedule={
@@ -236,6 +244,7 @@ const App = () => {
 interface FollowingModalProps {
   modalArtistInfo: Artist;
   onClose: () => void;
+  currentStage: string;
 }
 
 const FollowingModal = (props: FollowingModalProps) => {
@@ -243,25 +252,63 @@ const FollowingModal = (props: FollowingModalProps) => {
     return null;
   }
 
+  // Hack to hide scrollbar
+  document.body.style.overflow = "hidden";
+
+  const hourStart = new Date(Date.parse(props.modalArtistInfo.timeStart));
+  const hourEnd = new Date(Date.parse(props.modalArtistInfo.timeEnd));
+
+  const timeStart =
+    (hourStart.getHours() < 10 ? "0" : "") +
+    hourStart.getHours() +
+    ":" +
+    (hourStart.getMinutes() < 10 ? "0" : "") +
+    hourStart.getMinutes();
+  const timeEnd =
+    (hourEnd.getHours() < 10 ? "0" : "") +
+    hourEnd.getHours() +
+    ":" +
+    (hourEnd.getMinutes() < 10 ? "0" : "") +
+    hourEnd.getMinutes();
+
   return (
     <div className="backdrop" onClick={props.onClose}>
       <div className="modal">
         <div className="modal-header">
-          <div className="modal-header-title">You're going to</div>
-          <div className="modal-X" onClick={props.onClose}>
-            X
+          <div className="modal-header-side"></div>
+          <div className="modal-header-title">
+            {props.modalArtistInfo.artist}
+          </div>
+          <div className="modal-header-side">
+            <img
+              src={X}
+              className="modal-x"
+              alt="Close"
+              onClick={props.onClose}
+            ></img>
           </div>
         </div>
-        <div className="report-body">
+        <div className="modal-body">
           {/* Joining Lucas & Steve at 16:00 - 17:00 @ Mainstage with:
 - Andri
 - Petia
 */}
-          Artist: {props.modalArtistInfo.artist}
+          You are{" "}
+          {props.modalArtistInfo.attending ? (
+            <span className="going">going</span>
+          ) : (
+            <span className="not-going">not going</span>
+          )}{" "}
+          to
           <br />
-          At: {props.modalArtistInfo.timeStart}
+          {props.modalArtistInfo.artist}
           <br />
-          Joining you:
+          {timeStart} - {timeEnd} @ {props.currentStage}
+          <br />
+          <br />
+          {props.modalArtistInfo.attending
+            ? `People you follow joining you:`
+            : `People you follow going:`}
           <br />
           <ul>
             {props.modalArtistInfo?.attendees?.map((attender) => {
@@ -269,7 +316,7 @@ const FollowingModal = (props: FollowingModalProps) => {
             })}
           </ul>
         </div>
-        <div className="footer" onClick={props.onClose}>
+        <div className="modal-footer" onClick={props.onClose}>
           Close
         </div>
       </div>
@@ -406,6 +453,19 @@ const TodaysSchedule = (props: TodaysScheduleProps) => {
         const hourStart = new Date(Date.parse(slot.timeStart));
         const hourEnd = new Date(Date.parse(slot.timeEnd));
 
+        const timeStart =
+          (hourStart.getHours() < 10 ? "0" : "") +
+          hourStart.getHours() +
+          ":" +
+          (hourStart.getMinutes() < 10 ? "0" : "") +
+          hourStart.getMinutes();
+        const timeEnd =
+          (hourEnd.getHours() < 10 ? "0" : "") +
+          hourEnd.getHours() +
+          ":" +
+          (hourEnd.getMinutes() < 10 ? "0" : "") +
+          hourEnd.getMinutes();
+
         return (
           <div key={slot.id} className="timeslot">
             <div
@@ -417,12 +477,9 @@ const TodaysSchedule = (props: TodaysScheduleProps) => {
               }
             >
               <div className="timeslot-time">
-                {(hourStart.getHours() < 10 ? "0" : "") + hourStart.getHours()}:
-                {(hourStart.getMinutes() < 10 ? "0" : "") +
-                  hourStart.getMinutes()}
+                {timeStart}
                 <br />
-                {(hourEnd.getHours() < 10 ? "0" : "") + hourEnd.getHours()}:
-                {(hourEnd.getMinutes() < 10 ? "0" : "") + hourEnd.getMinutes()}{" "}
+                {timeEnd}
               </div>
               <div className="timeslot-artist">{slot.artist}</div>
             </div>
