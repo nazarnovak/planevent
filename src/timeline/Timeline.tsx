@@ -57,8 +57,10 @@ function formatTime(start: string, end: string) {
   const endDate = new Date(Date.parse(end));
 
   return (
-    `${padTime(startDate.getHours())}:${padTime(startDate.getMinutes())} - ` +
-    `${padTime(endDate.getHours())}:${padTime(endDate.getMinutes())}`
+    `${padTime(startDate.getUTCHours())}:${padTime(
+      startDate.getUTCMinutes()
+    )} - ` +
+    `${padTime(endDate.getUTCHours())}:${padTime(endDate.getUTCMinutes())}`
   );
 }
 
