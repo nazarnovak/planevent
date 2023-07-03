@@ -123,6 +123,11 @@ body {
   font-weight: bold;
 }
 
+.text-gray {
+  color: #aaa;
+  font-weight: bold;
+}
+
 .text-orange {
   color: #ff5f15;
   font-weight: bold;

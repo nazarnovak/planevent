@@ -4,7 +4,7 @@ import { Artist, Schedule, ScheduleAPIResponse, User } from "./Dto";
 import { Loader } from "./Loader";
 import { SharedTopButtons } from "./components/TopButtons/SharedTopButtons";
 
-// import { Timeline } from "./timeline/Timeline";
+import { Timeline } from "./timeline/Timeline";
 
 import { MyTopButtons } from "./components/TopButtons/MyTopButtons";
 
@@ -170,18 +170,12 @@ const App = () => {
       });
   };
 
-  //   const showUsersList = (users: User[]) => {
-  //     // TODO implement
-  //     console.log(users);
-  //   };
-
   if (schedule.length === 0) {
     return <Loader />;
   }
 
   return (
     <div>
-      {/* <Timeline schedule={schedule} onEventClick={showUsersList} /> */}
       <div id="top-buttons-container">
         {!sharedLineupID && (
           <MyTopButtons
@@ -216,6 +210,7 @@ const App = () => {
         changeWeek={changeWeek}
         changeDay={changeDay}
         changeStage={changeStage}
+        sharedLineup={!!sharedLineupID}
       />
       <FollowingModal
         modalArtistInfo={modalArtistInfo}
@@ -229,14 +224,23 @@ const App = () => {
             ?.stage || ""
         }
       />
-      <TodaysSchedule
-        schedule={
-          schedule[currentWeek]?.days[currentDay]?.stages[currentStage]
-            ?.artists || []
-        }
-        updateAttendanceStatus={updateAttendanceStatus}
-        setModalArtistInfo={setModalArtistInfo}
-      />
+      {!!sharedLineupID && (
+        <Timeline
+          day={schedule[currentWeek]?.days[currentDay]}
+          currentWeek={currentWeek}
+          currentDay={currentDay}
+        />
+      )}
+      {!sharedLineupID && (
+        <TodaysSchedule
+          schedule={
+            schedule[currentWeek]?.days[currentDay]?.stages[currentStage]
+              ?.artists || []
+          }
+          updateAttendanceStatus={updateAttendanceStatus}
+          setModalArtistInfo={setModalArtistInfo}
+        />
+      )}
     </div>
   );
 };
@@ -289,10 +293,6 @@ const FollowingModal = (props: FollowingModalProps) => {
           </div>
         </div>
         <div className="modal-body">
-          {/* Joining Lucas & Steve at 16:00 - 17:00 @ Mainstage with:
-- Andri
-- Petia
-*/}
           You are{" "}
           {props.modalArtistInfo.attending ? (
             <span className="going">going</span>
@@ -333,11 +333,20 @@ interface TitleProps {
 }
 
 const Title = (props: TitleProps) => {
+  let titleClass = "";
+  if (props.warningFont) {
+    titleClass = "text-orange";
+  } else if (props.sharedSchedule) {
+    titleClass = "text-gray";
+  } else {
+    titleClass = "text-white";
+  }
+
   return (
     <input
       style={{ width: "100%" }}
       id="title"
-      className={props.warningFont ? "text-orange" : "text-white"}
+      className={titleClass}
       type="text"
       maxLength={32}
       onChange={(e) => {
@@ -365,6 +374,7 @@ interface DaySelectorProps {
   changeWeek: (weekNumber: number) => void;
   changeDay: (weekNumber: number) => void;
   changeStage: (weekNumber: number) => void;
+  sharedLineup: boolean;
 }
 
 const DaySelector = (props: DaySelectorProps) => {
@@ -402,29 +412,31 @@ const DaySelector = (props: DaySelectorProps) => {
           );
         })}
       </div>
-      <div id="stage-selector">
-        <div
-          className="week-day-stage-item stage-item stage-previous-next"
-          onClick={() => {
-            props.changeStage(props.currentStage - 1);
-          }}
-        >
-          &lt;
+      {!props.sharedLineup && (
+        <div id="stage-selector">
+          <div
+            className="week-day-stage-item stage-item stage-previous-next"
+            onClick={() => {
+              props.changeStage(props.currentStage - 1);
+            }}
+          >
+            &lt;
+          </div>
+          <div id="stage" className="week-day-stage-item stage-item active">
+            {
+              props.schedule[props.currentWeek]?.days[props.currentDay]?.stages[
+                props.currentStage
+              ]?.stage
+            }
+          </div>
+          <div
+            className="week-day-stage-item stage-item stage-previous-next"
+            onClick={() => props.changeStage(props.currentStage + 1)}
+          >
+            &gt;
+          </div>
         </div>
-        <div id="stage" className="week-day-stage-item stage-item active">
-          {
-            props.schedule[props.currentWeek]?.days[props.currentDay]?.stages[
-              props.currentStage
-            ]?.stage
-          }
-        </div>
-        <div
-          className="week-day-stage-item stage-item stage-previous-next"
-          onClick={() => props.changeStage(props.currentStage + 1)}
-        >
-          &gt;
-        </div>
-      </div>
+      )}
     </div>
   );
 };

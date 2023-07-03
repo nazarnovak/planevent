@@ -1,34 +1,88 @@
+#shared-timeline {
+  margin-top: 16px;
+}
+
 .timeline_event {
-    margin:10px 20px 10px 20px;
-    padding:10px;
-    background-color:#faf9f8;
+  margin: 10px 20px 10px 20px;
+  padding: 10px;
+  background-color: #faf9f8;
 }
 
 .timeline_location {
-    background-image: linear-gradient(90deg, #554cc7 0, #aa397e 100%);
-    padding:5px;
-    font-size:22px;
+  background-image: linear-gradient(90deg, #554cc7 0, #aa397e 100%);
+  padding: 8px;
+  font-size: 22px;
 }
 
 .timeline_time {
-    margin-top:5px;
-    color:#504f6d;
-    font-size:17px;
-    text-align:center;
+  margin-top: 5px;
+  color: #000;
+  font-size: 20px;
+  line-height: 20px;
+  text-align: center;
+}
+
+@media (min-width: 0px) and (max-width: 320px) {
+  .timeline_time {
+    font-size: 16px;
+    line-height: 16px;
+  }
+}
+
+@media (min-width: 321px) and (max-width: 655px) {
+  .timeline_time {
+    font-size: 16px;
+    line-height: 16px;
+  }
 }
 
 .timeline_artist {
-    font-size:30px;
-    color:black;
-    text-align:center;
+  font-size: 30px;
+  line-height: 30px;
+  color: black;
+  text-align: center;
+}
+
+@media (min-width: 0px) and (max-width: 320px) {
+  .timeline_artist {
+    font-size: 16px;
+    line-height: 16px;
+  }
+}
+
+@media (min-width: 321px) and (max-width: 655px) {
+  .timeline_artist {
+    font-size: 22px;
+    line-height: 22px;
+  }
+}
+
+@media (min-width: 656px) and (max-width: 1023px) {
+  .timeline_artist {
+    font-size: 24px;
+    line-height: 24px;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1392px) {
+  .timeline_artist {
+    font-size: 26px;
+    line-height: 26px;
+  }
 }
 
 .timeline_title {
-    margin:20px 0px;
+  margin: 20px 0px;
 }
 
 .timeline_with {
-    margin-top:2px;
-    color:black;
-    text-align:center;
+  margin-top: 2px;
+  color: black;
+  text-align: center;
+}
+
+.not-going-today {
+  text-align: center;
+  margin-top: 16px;
+  font-weight: bold;
 }
