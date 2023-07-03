@@ -59,6 +59,7 @@ body {
   padding: 0px calc(var(--font-size-base) * 3);
   outline: none;
   background-color: var(--black);
+  word-break: break-word;
 }
 
 @media (min-width: 0px) and (max-width: 320px) {
