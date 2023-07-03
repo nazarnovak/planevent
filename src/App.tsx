@@ -302,17 +302,17 @@ const FollowingModal = (props: FollowingModalProps) => {
   const hourEnd = new Date(Date.parse(props.modalArtistInfo.timeEnd));
 
   const timeStart =
-    (hourStart.getHours() < 10 ? "0" : "") +
-    hourStart.getHours() +
+    (hourStart.getUTCHours() < 10 ? "0" : "") +
+    hourStart.getUTCHours() +
     ":" +
-    (hourStart.getMinutes() < 10 ? "0" : "") +
-    hourStart.getMinutes();
+    (hourStart.getUTCMinutes() < 10 ? "0" : "") +
+    hourStart.getUTCMinutes();
   const timeEnd =
-    (hourEnd.getHours() < 10 ? "0" : "") +
-    hourEnd.getHours() +
+    (hourEnd.getUTCHours() < 10 ? "0" : "") +
+    hourEnd.getUTCHours() +
     ":" +
-    (hourEnd.getMinutes() < 10 ? "0" : "") +
-    hourEnd.getMinutes();
+    (hourEnd.getUTCMinutes() < 10 ? "0" : "") +
+    hourEnd.getUTCMinutes();
 
   return (
     <div className="backdrop" onClick={props.onClose}>
@@ -535,17 +535,17 @@ const TodaysSchedule = (props: TodaysScheduleProps) => {
         const hourEnd = new Date(Date.parse(slot.timeEnd));
 
         const timeStart =
-          (hourStart.getHours() < 10 ? "0" : "") +
-          hourStart.getHours() +
+          (hourStart.getUTCHours() < 10 ? "0" : "") +
+          hourStart.getUTCHours() +
           ":" +
-          (hourStart.getMinutes() < 10 ? "0" : "") +
-          hourStart.getMinutes();
+          (hourStart.getUTCMinutes() < 10 ? "0" : "") +
+          hourStart.getUTCMinutes();
         const timeEnd =
-          (hourEnd.getHours() < 10 ? "0" : "") +
-          hourEnd.getHours() +
+          (hourEnd.getUTCHours() < 10 ? "0" : "") +
+          hourEnd.getUTCHours() +
           ":" +
-          (hourEnd.getMinutes() < 10 ? "0" : "") +
-          hourEnd.getMinutes();
+          (hourEnd.getUTCMinutes() < 10 ? "0" : "") +
+          hourEnd.getUTCMinutes();
 
         return (
           <div key={slot.id} className="timeslot">
