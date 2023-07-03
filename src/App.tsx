@@ -25,7 +25,9 @@ const App = () => {
   const [currentDay, setCurrentDay] = useState(0);
   const [currentStage, setCurrentStage] = useState(0);
 
+  const [modalArtistKey, setModalArtistKey] = useState(0);
   const [modalArtistInfo, setModalArtistInfo] = useState({} as Artist);
+
   const [schedule, setSchedule] = useState([] as Schedule[]);
 
   const fetchLatestSchedule = (sharedLineupID: string) => {
@@ -113,6 +115,7 @@ const App = () => {
     };
 
     fetchAPI();
+    // eslint-disable-next-line
   }, []);
 
   const changeWeek = (changedWeek: number) => {
@@ -145,6 +148,22 @@ const App = () => {
     slotId: string,
     newAttendingStatus: boolean
   ) => {
+    // Weird hack to rewrite the schedule in state in the specific artist key :/
+    let tempSchedule = [...schedule];
+    if (
+      tempSchedule[currentWeek] &&
+      tempSchedule[currentWeek]?.days[currentDay] &&
+      tempSchedule[currentWeek]?.days[currentDay]?.stages[currentStage] &&
+      tempSchedule[currentWeek]?.days[currentDay]?.stages[currentStage].artists[
+        key
+      ]
+    ) {
+      tempSchedule[currentWeek].days[currentDay].stages[currentStage].artists[
+        key
+      ].attending = newAttendingStatus;
+      setSchedule(tempSchedule);
+    }
+
     fetch(
       "https://planevent.me/api/attend?eventId=" +
         slotId +
@@ -157,20 +176,6 @@ const App = () => {
     ).then((response) => {
       if (!response.ok)
         throw new Error("Something went wrong when updating attendance");
-      // Weird hack to rewrite the schedule in state in the specific artist key :/
-      let tempSchedule = [...schedule];
-      if (
-        tempSchedule[currentWeek] &&
-        tempSchedule[currentWeek]?.days[currentDay] &&
-        tempSchedule[currentWeek]?.days[currentDay]?.stages[currentStage] &&
-        tempSchedule[currentWeek]?.days[currentDay]?.stages[currentStage]
-          .artists[key]
-      ) {
-        tempSchedule[currentWeek].days[currentDay].stages[currentStage].artists[
-          key
-        ].attending = newAttendingStatus;
-        setSchedule(tempSchedule);
-      }
     });
   };
 
@@ -237,6 +242,16 @@ const App = () => {
         onClose={() => {
           // Hack to hide scrollbar
           document.body.style.overflow = "auto";
+          setModalArtistKey(0);
+          setModalArtistInfo({} as Artist);
+        }}
+        handleChangeGoing={() => {
+          updateAttendanceStatus(
+            modalArtistKey,
+            modalArtistInfo.id,
+            !modalArtistInfo.attending
+          );
+          setModalArtistKey(0);
           setModalArtistInfo({} as Artist);
         }}
         currentStage={
@@ -258,7 +273,10 @@ const App = () => {
               ?.artists || []
           }
           updateAttendanceStatus={updateAttendanceStatus}
-          setModalArtistInfo={setModalArtistInfo}
+          handleFollowersClick={(i: number, artist: Artist) => {
+            setModalArtistKey(i);
+            setModalArtistInfo(artist);
+          }}
         />
       )}
     </div>
@@ -269,6 +287,7 @@ interface FollowingModalProps {
   modalArtistInfo: Artist;
   onClose: () => void;
   currentStage: string;
+  handleChangeGoing: () => void;
 }
 
 const FollowingModal = (props: FollowingModalProps) => {
@@ -297,7 +316,12 @@ const FollowingModal = (props: FollowingModalProps) => {
 
   return (
     <div className="backdrop" onClick={props.onClose}>
-      <div className="modal">
+      <div
+        className="modal"
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
         <div className="modal-header">
           <div className="modal-header-side"></div>
           <div className="modal-header-title">
@@ -319,9 +343,7 @@ const FollowingModal = (props: FollowingModalProps) => {
           ) : (
             <span className="not-going">not going</span>
           )}{" "}
-          to
           <br />
-          {props.modalArtistInfo.artist}
           <br />
           {timeStart} - {timeEnd} @ {props.currentStage}
           <br />
@@ -336,8 +358,14 @@ const FollowingModal = (props: FollowingModalProps) => {
             })}
           </ul>
         </div>
-        <div className="modal-footer" onClick={props.onClose}>
-          Close
+        <div
+          className={
+            `modal-footer` +
+            (props.modalArtistInfo.attending ? " dont-go" : " join")
+          }
+          onClick={props.handleChangeGoing}
+        >
+          {props.modalArtistInfo.attending ? "Don't go" : "Join"}
         </div>
       </div>
     </div>
@@ -489,7 +517,7 @@ interface TodaysScheduleProps {
     slotId: string,
     newAttendingStatus: boolean
   ) => void;
-  setModalArtistInfo: (artist: Artist) => void;
+  handleFollowersClick: (i: number, artist: Artist) => void;
 }
 
 const TodaysSchedule = (props: TodaysScheduleProps) => {
@@ -543,7 +571,7 @@ const TodaysSchedule = (props: TodaysScheduleProps) => {
                   return null;
                 }
 
-                props.setModalArtistInfo(slot);
+                props.handleFollowersClick(i, slot);
               }}
             >
               {slot.attendees.length}
