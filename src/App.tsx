@@ -486,6 +486,10 @@ const Title = (props: TitleProps) => {
       className={titleClass}
       type="text"
       maxLength={32}
+      onClick={(e) => {
+        const target = e.target as HTMLInputElement;
+        target.select();
+      }}
       onChange={(e) => {
         props.handleTitleChange(e.target.value as string);
       }}
