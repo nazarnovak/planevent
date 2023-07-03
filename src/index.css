@@ -279,7 +279,7 @@ body {
 }
 
 .day {
-  flex-basis: 33.3%;
+  flex: 1 1;
   padding: calc(var(--font-size-base) * 2) calc(var(--font-size-base) * 1);
 }
 

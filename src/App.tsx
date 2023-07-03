@@ -11,6 +11,7 @@ import { MyTopButtons } from "./components/TopButtons/MyTopButtons";
 import X from "./images/x.svg";
 
 const App = () => {
+  const [loading, setLoading] = useState(false);
   const [me, setMe] = useState<User>({ id: "", name: "", following: [] });
   const [owner, setOwner] = useState<User>({ id: "", name: "", following: [] });
 
@@ -28,6 +29,7 @@ const App = () => {
   const [schedule, setSchedule] = useState([] as Schedule[]);
 
   const fetchLatestSchedule = (sharedLineupID: string) => {
+    setLoading(true);
     fetch(
       "https://planevent.me/api/schedule" +
         (sharedLineupID ? "/" + sharedLineupID : ""),
@@ -49,8 +51,26 @@ const App = () => {
           setTitle(data.me.name);
         }
 
-        setSchedule(data.schedule);
+        if (!sharedLineupID) {
+          setSchedule(data.schedule);
+        } else {
+          setSchedule(filterSchedule(data.schedule));
+        }
+      })
+      .finally(() => setLoading(false));
+  };
+
+  const filterSchedule = (schedule: Schedule[]) => {
+    return schedule.filter((week) => {
+      week.days = week.days.filter((day) => {
+        day.stages = day.stages.filter((stage) => {
+          stage.artists = stage.artists.filter((artist) => artist.attending);
+          return stage.artists.length;
+        });
+        return day.stages.length;
       });
+      return week.days.length;
+    });
   };
 
   const fetchSecret = () => {
@@ -170,7 +190,7 @@ const App = () => {
       });
   };
 
-  if (schedule.length === 0) {
+  if (loading) {
     return <Loader />;
   }
 
