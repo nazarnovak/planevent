@@ -378,6 +378,24 @@ interface DaySelectorProps {
 }
 
 const DaySelector = (props: DaySelectorProps) => {
+  const [attendingWeeks, setAttendingWeeks] = useState([] as number[]);
+
+  useEffect(() => {
+    outer: for (let week of props.schedule) {
+      for (let day of week.days) {
+        for (let stages of day.stages) {
+          for (let artist of stages.artists) {
+            if (artist.attending) {
+              setAttendingWeeks([...attendingWeeks, week.weekNumber]);
+              break outer;
+            }
+          }
+        }
+      }
+    }
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <div>
       <div id="week-selector">
@@ -385,6 +403,9 @@ const DaySelector = (props: DaySelectorProps) => {
           return (
             <div
               key={i}
+              style={{
+                display: attendingWeeks.includes(i) ? "block" : "block",
+              }}
               className={
                 `week-day-stage-item week` +
                 (i === props.currentWeek ? " active" : "")

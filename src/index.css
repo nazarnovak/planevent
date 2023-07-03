@@ -249,7 +249,7 @@ body {
 }
 
 .week {
-  flex-basis: 50%;
+  flex: 1 1;
   padding: calc(var(--font-size-base) * 2);
 }
 
