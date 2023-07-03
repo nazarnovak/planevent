@@ -123,6 +123,11 @@ body {
   font-weight: bold;
 }
 
+input[type="text"][disabled] {
+  color: #aaa;
+  font-weight: bold;
+}
+
 .text-gray {
   color: #aaa;
   font-weight: bold;
