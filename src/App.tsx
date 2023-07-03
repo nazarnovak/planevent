@@ -385,6 +385,14 @@ const Title = (props: TitleProps) => {
     titleClass = "text-white";
   }
 
+  if (props.sharedSchedule) {
+    return (
+      <div id="title" className={titleClass} style={{ width: "100%" }}>
+        {props.title}'s lineup
+      </div>
+    );
+  }
+
   return (
     <input
       style={{ width: "100%" }}
