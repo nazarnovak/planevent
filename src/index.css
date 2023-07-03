@@ -604,3 +604,35 @@ ul {
 li {
   margin-left: calc(var(--font-size-base) * 3);
 }
+
+.stage-modal-body {
+  width: 100%;
+  height: calc(var(--font-size-base) * 58);
+  font-size: calc(var(--font-size-base) * 3);
+  line-height: calc(var(--font-size-base) * 3);
+  overflow: hidden;
+  overflow-y: scroll;
+  z-index: 13;
+  font-weight: bold;
+}
+
+.stage-modal-item {
+  height: calc(var(--font-size-base) * 9 - 1px);
+  border-bottom: 1px solid white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.stage-modal-item:hover {
+  background-color: #666;
+}
+
+.stage-modal-item:last-child {
+  border-bottom: none;
+}
+
+.stage-modal-item .active {
+  background-color: white;
+  color: black;
+}

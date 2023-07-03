@@ -25,6 +25,9 @@ const App = () => {
   const [currentDay, setCurrentDay] = useState(0);
   const [currentStage, setCurrentStage] = useState(0);
 
+  const [allTodaysStages, setAllTodaysStages] = useState([] as string[]);
+  const [stageModalOpen, setStageModalOpen] = useState(false);
+
   const [modalArtistKey, setModalArtistKey] = useState(0);
   const [modalArtistInfo, setModalArtistInfo] = useState({} as Artist);
 
@@ -58,6 +61,12 @@ const App = () => {
         } else {
           setSchedule(filterSchedule(data.schedule));
         }
+
+        let allStageNames =
+          data.schedule[currentWeek]?.days[currentDay]?.stages.map(
+            (stage) => stage.stage
+          ) || [];
+        setAllTodaysStages(allStageNames);
       })
       .finally(() => setLoading(false));
   };
@@ -192,6 +201,10 @@ const App = () => {
       });
   };
 
+  const handleStageClick = () => {
+    setStageModalOpen(true);
+  };
+
   if (loading) {
     return <Loader />;
   }
@@ -223,6 +236,20 @@ const App = () => {
           sharedSchedule={!!sharedLineupID}
         />
       </div>
+      <StageModal
+        stageModalOpen={stageModalOpen}
+        currentStage={currentStage}
+        allTodaysStages={allTodaysStages}
+        onClose={() => {
+          // Hack to hide scrollbar
+          document.body.style.overflow = "auto";
+          setStageModalOpen(false);
+        }}
+        handleStageClick={(stageNumber: number) => {
+          setCurrentStage(stageNumber);
+          setStageModalOpen(false);
+        }}
+      />
       <DaySelector
         schedule={schedule}
         currentWeek={currentWeek}
@@ -232,6 +259,7 @@ const App = () => {
         changeDay={changeDay}
         changeStage={changeStage}
         sharedLineup={!!sharedLineupID}
+        handleStageClick={handleStageClick}
       />
       <FollowingModal
         modalArtistInfo={modalArtistInfo}
@@ -275,6 +303,59 @@ const App = () => {
           }}
         />
       )}
+    </div>
+  );
+};
+
+interface StageModalProps {
+  stageModalOpen: boolean;
+  allTodaysStages: string[];
+  currentStage: number;
+  onClose: () => void;
+  handleStageClick: (stageNumber: number) => void;
+}
+const StageModal = (props: StageModalProps) => {
+  if (!props.stageModalOpen || !props.allTodaysStages) {
+    return null;
+  }
+
+  // Hack to hide scrollbar
+  document.body.style.overflow = "hidden";
+
+  return (
+    <div className="backdrop" onClick={props.onClose}>
+      <div
+        className="modal"
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        <div className="modal-header">
+          <div className="modal-header-side"></div>
+          <div className="modal-header-title">Select stage</div>
+          <div className="modal-header-side">
+            <img
+              src={X}
+              className="modal-x"
+              alt="Close"
+              onClick={props.onClose}
+            ></img>
+          </div>
+        </div>
+        <div className="stage-modal-body">
+          {props.allTodaysStages.map((stageName: string, i: number) => (
+            <div
+              key={i}
+              className={
+                "stage-modal-item" + (props.currentStage === i ? " active" : "")
+              }
+              onClick={() => props.handleStageClick(i)}
+            >
+              {stageName}
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
@@ -425,6 +506,7 @@ interface DaySelectorProps {
   changeDay: (weekNumber: number) => void;
   changeStage: (weekNumber: number) => void;
   sharedLineup: boolean;
+  handleStageClick: () => void;
 }
 
 const DaySelector = (props: DaySelectorProps) => {
@@ -493,7 +575,11 @@ const DaySelector = (props: DaySelectorProps) => {
           >
             &lt;
           </div>
-          <div id="stage" className="week-day-stage-item stage-item active">
+          <div
+            id="stage"
+            className="week-day-stage-item stage-item active"
+            onClick={props.handleStageClick}
+          >
             {
               props.schedule[props.currentWeek]?.days[props.currentDay]?.stages[
                 props.currentStage
