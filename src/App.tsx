@@ -161,11 +161,11 @@ const App = () => {
     fetch("https://planevent.me/api/name?name=" + newTitle, {
       method: "POST",
       credentials: "include",
-    }).then((response) => {
-      if (!response.ok)
-        throw new Error("Something went wrong when updating user name");
-      setTitle(newTitle);
-    });
+    })
+      .then((response) => response.json())
+      .then((body: User) => {
+        setMe(body);
+      });
   };
 
   //   const showUsersList = (users: User[]) => {
@@ -253,6 +253,10 @@ const FollowingModal = (props: FollowingModalProps) => {
           </div>
         </div>
         <div className="report-body">
+          {/* Joining Lucas & Steve at 16:00 - 17:00 @ Mainstage with:
+- Andri
+- Petia
+*/}
           Artist: {props.modalArtistInfo.artist}
           <br />
           At: {props.modalArtistInfo.timeStart}
