@@ -246,6 +246,8 @@ const App = () => {
           setStageModalOpen(false);
         }}
         handleStageClick={(stageNumber: number) => {
+          // Hack to hide scrollbar
+          document.body.style.overflow = "auto";
           setCurrentStage(stageNumber);
           setStageModalOpen(false);
         }}
@@ -270,6 +272,9 @@ const App = () => {
           setModalArtistInfo({} as Artist);
         }}
         handleChangeGoing={() => {
+          // Hack to hide scrollbar
+          document.body.style.overflow = "auto";
+
           updateAttendanceStatus(
             modalArtistKey,
             modalArtistInfo.id,
