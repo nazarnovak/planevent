@@ -124,12 +124,12 @@ body {
 }
 
 input[type="text"][disabled] {
-  color: #aaa;
+  color: #ccc;
   font-weight: bold;
 }
 
 .text-gray {
-  color: #aaa;
+  color: #ccc;
   font-weight: bold;
 }
 

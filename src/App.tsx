@@ -182,9 +182,6 @@ const App = () => {
   const handleTitleChange = (newTitle: string) => {
     setShowShareError(false);
     setTitle(newTitle);
-  };
-
-  const handleTitleSubmit = (newTitle: string) => {
     fetch("https://planevent.me/api/name?name=" + newTitle, {
       method: "POST",
       credentials: "include",
@@ -223,7 +220,6 @@ const App = () => {
           warningFont={showShareError}
           title={title}
           handleTitleChange={handleTitleChange}
-          handleTitleSubmit={handleTitleSubmit}
           sharedSchedule={!!sharedLineupID}
         />
       </div>
@@ -376,7 +372,6 @@ interface TitleProps {
   warningFont: boolean;
   title: string;
   handleTitleChange: (title: string) => void;
-  handleTitleSubmit: (title: string) => void;
   sharedSchedule: boolean;
 }
 
@@ -400,7 +395,6 @@ const Title = (props: TitleProps) => {
       onChange={(e) => {
         props.handleTitleChange(e.target.value as string);
       }}
-      onBlur={(e) => props.handleTitleSubmit(e.target.value as string)}
       onKeyUp={(e) => {
         if (e.key === "Enter") {
           const target = e.target as HTMLInputElement;
