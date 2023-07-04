@@ -88,7 +88,7 @@ body {
 }
 
 .top-button-container {
-  flex-basis: 33.3%;
+  flex: 1 1;
   text-align: center;
 }
 

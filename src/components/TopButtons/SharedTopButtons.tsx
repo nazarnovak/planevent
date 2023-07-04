@@ -5,6 +5,7 @@ import { DonateButton } from "./DonateButton/DonateButton";
 interface Props {
   sharedLineupID: string;
   following: boolean;
+  viewingOwnSchedule: boolean;
 }
 
 export const SharedTopButtons = (props: Props) => {
@@ -63,38 +64,40 @@ export const SharedTopButtons = (props: Props) => {
           </button>
           <div className="top-button-description">Create my lineup</div>
         </div>
-        <div className="top-button-container">
-          {!following && (
-            <>
-              <button
-                id="my-schedule"
-                className="button-black"
-                onClick={() => handleFollowLineup(true)}
-              >
-                <img src="/plus.png" alt="Follow this lineup" />
-              </button>
-              <div className="top-button-description">Follow this lineup</div>
-            </>
-          )}
-          {following && (
-            <>
-              <button
-                id="my-schedule"
-                className="button-black minus-button"
-                onClick={() => handleFollowLineup(false)}
-              >
-                <img
-                  id="minus-image"
-                  src="/minus.png"
-                  alt="Stop follow this lineup"
-                />
-              </button>
-              <div className="top-button-description">
-                Stop following this lineup
-              </div>
-            </>
-          )}
-        </div>
+        {!props.viewingOwnSchedule && (
+          <div className="top-button-container">
+            {!following && (
+              <>
+                <button
+                  id="my-schedule"
+                  className="button-black"
+                  onClick={() => handleFollowLineup(true)}
+                >
+                  <img src="/plus.png" alt="Follow this lineup" />
+                </button>
+                <div className="top-button-description">Follow this lineup</div>
+              </>
+            )}
+            {following && (
+              <>
+                <button
+                  id="my-schedule"
+                  className="button-black minus-button"
+                  onClick={() => handleFollowLineup(false)}
+                >
+                  <img
+                    id="minus-image"
+                    src="/minus.png"
+                    alt="Stop follow this lineup"
+                  />
+                </button>
+                <div className="top-button-description">
+                  Stop following this lineup
+                </div>
+              </>
+            )}
+          </div>
+        )}
         <DonateButton />
       </div>
     </div>

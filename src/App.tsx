@@ -225,6 +225,7 @@ const App = () => {
           <SharedTopButtons
             sharedLineupID={sharedLineupID}
             following={!!me.following.find((id) => id === owner.id)}
+            viewingOwnSchedule={me?.id !== "" && me.id === owner.id}
           />
         )}
       </div>
