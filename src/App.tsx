@@ -17,6 +17,7 @@ const App = () => {
 
   const [secretId, setSecretId] = useState("");
   const [sharedLineupID, setSharedLineupID] = useState("");
+  const [editMode, setEditMode] = useState(true);
 
   const [showShareError, setShowShareError] = useState(false);
   const [title, setTitle] = useState("Your name");
@@ -32,6 +33,7 @@ const App = () => {
   const [modalArtistInfo, setModalArtistInfo] = useState({} as Artist);
 
   const [schedule, setSchedule] = useState([] as Schedule[]);
+  const [filteredSchedule, setFilteredSchedule] = useState([] as Schedule[]);
 
   const fetchLatestSchedule = (sharedLineupID: string) => {
     setLoading(true);
@@ -56,11 +58,15 @@ const App = () => {
           setTitle(data.me.name);
         }
 
+        // Copy object without a reference
+        const fetchedSchedule = JSON.parse(JSON.stringify(data.schedule));
+        const fetchedSchedule2 = JSON.parse(JSON.stringify(data.schedule));
+
         if (!sharedLineupID) {
-          setSchedule(data.schedule);
-        } else {
-          setSchedule(filterSchedule(data.schedule));
+          setSchedule(fetchedSchedule);
         }
+
+        setFilteredSchedule(filterSchedule(fetchedSchedule2));
 
         let allStageNames =
           data.schedule[currentWeek]?.days[currentDay]?.stages.map(
@@ -170,7 +176,11 @@ const App = () => {
       tempSchedule[currentWeek].days[currentDay].stages[currentStage].artists[
         key
       ].attending = newAttendingStatus;
+      // Copy object without a reference
+      const tempSchedule2 = JSON.parse(JSON.stringify(tempSchedule));
+
       setSchedule(tempSchedule);
+      setFilteredSchedule(filterSchedule(tempSchedule2));
     }
 
     fetch(
@@ -219,6 +229,8 @@ const App = () => {
             title={title}
             showShareError={showShareError}
             setShowShareError={setShowShareError}
+            editMode={editMode}
+            handleLineupToggleClick={() => setEditMode(!editMode)}
           />
         )}
         {sharedLineupID && (
@@ -254,7 +266,7 @@ const App = () => {
         }}
       />
       <DaySelector
-        schedule={schedule}
+        schedule={!!sharedLineupID || !editMode ? filteredSchedule : schedule}
         currentWeek={currentWeek}
         currentDay={currentDay}
         currentStage={currentStage}
@@ -263,6 +275,7 @@ const App = () => {
         changeStage={changeStage}
         sharedLineup={!!sharedLineupID}
         handleStageClick={handleStageClick}
+        editMode={editMode}
       />
       <FollowingModal
         modalArtistInfo={modalArtistInfo}
@@ -289,16 +302,16 @@ const App = () => {
             ?.stage || ""
         }
       />
-      {!!sharedLineupID && (
+      {(!!sharedLineupID || !editMode) && (
         <Timeline
-          day={schedule[currentWeek]?.days[currentDay]}
-          currentWeek={currentWeek}
+          day={filteredSchedule[currentWeek]?.days[currentDay]}
           currentDay={currentDay}
+          currentWeek={currentWeek}
           viewingOwnSchedule={me?.id !== "" && me.id === owner.id}
           myId={me?.id || ""}
         />
       )}
-      {!sharedLineupID && (
+      {!sharedLineupID && editMode && (
         <TodaysSchedule
           schedule={
             schedule[currentWeek]?.days[currentDay]?.stages[currentStage]
@@ -519,6 +532,7 @@ interface DaySelectorProps {
   changeStage: (weekNumber: number) => void;
   sharedLineup: boolean;
   handleStageClick: () => void;
+  editMode: boolean;
 }
 
 const DaySelector = (props: DaySelectorProps) => {
@@ -577,7 +591,7 @@ const DaySelector = (props: DaySelectorProps) => {
           );
         })}
       </div>
-      {!props.sharedLineup && (
+      {!props.sharedLineup && props.editMode && (
         <div id="stage-selector">
           <div
             className="week-day-stage-item stage-item stage-previous-next"

@@ -99,7 +99,7 @@ function parseEvents(day: Day, viewingOwnSchedule: boolean, myId: string) {
         const myAttendance = event.attendees.find(
           (attendee) => attendee.id === myId
         );
-        console.log(myAttendance);
+
         if (myAttendance?.id) {
           meAlsoGoing = true;
         }

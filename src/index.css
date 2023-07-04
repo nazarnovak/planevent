@@ -109,6 +109,11 @@ body {
   border: 2px solid var(--white);
 }
 
+.button-white {
+  background-color: var(--white);
+  border: 2px solid var(--white);
+}
+
 .button-green {
   background-color: #04ad15;
   border: 2px solid #04ad15;

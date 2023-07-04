@@ -9,6 +9,8 @@ interface Props {
   title: string;
   showShareError: boolean;
   setShowShareError: (show: boolean) => void;
+  editMode: boolean;
+  handleLineupToggleClick: () => void;
 }
 
 export const MyTopButtons = (props: Props) => {
@@ -122,7 +124,36 @@ export const MyTopButtons = (props: Props) => {
         )}
         {!props.showShareError && showSharedSuccess && <SuccessButton />}
       </div>
+      <ToggleLineupView
+        editMode={props.editMode}
+        handleLineupToggleClick={props.handleLineupToggleClick}
+      />
       <DonateButton />
+    </div>
+  );
+};
+
+interface ToggleLineupViewProps {
+  editMode: boolean;
+  handleLineupToggleClick: () => void;
+}
+
+const ToggleLineupView = (props: ToggleLineupViewProps) => {
+  return (
+    <div className="top-button-container">
+      <button
+        id="toggle-lineup-view"
+        className={props.editMode ? "button-black" : "button-white"}
+        onClick={props.handleLineupToggleClick}
+      >
+        <img
+          src={props.editMode ? "/clipboard-white.png" : "/clipboard-black.png"}
+          alt="Show only artists I'm going to"
+        />
+      </button>
+      <div className="top-button-description">
+        {props.editMode ? "View my schedule" : "Edit my schedule"}
+      </div>
     </div>
   );
 };
