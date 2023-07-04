@@ -8,10 +8,18 @@
   background-color: #faf9f8;
 }
 
+.timeline_event.also-going {
+  background-color: #006600;
+}
+
 .timeline_location {
   background-image: linear-gradient(90deg, #554cc7 0, #aa397e 100%);
   padding: 8px;
   font-size: 22px;
+}
+
+.also-going > .timeline_time {
+  color: #fff;
 }
 
 .timeline_time {
@@ -34,6 +42,10 @@
     font-size: 16px;
     line-height: 16px;
   }
+}
+
+.also-going > .timeline_artist {
+  color: #fff;
 }
 
 .timeline_artist {

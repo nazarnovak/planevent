@@ -294,6 +294,8 @@ const App = () => {
           day={schedule[currentWeek]?.days[currentDay]}
           currentWeek={currentWeek}
           currentDay={currentDay}
+          viewingOwnSchedule={me?.id !== "" && me.id === owner.id}
+          myId={me?.id || ""}
         />
       )}
       {!sharedLineupID && (

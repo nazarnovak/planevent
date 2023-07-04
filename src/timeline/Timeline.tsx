@@ -7,14 +7,16 @@ interface TimelineProps {
   day: Day;
   currentWeek: number;
   currentDay: number;
+  viewingOwnSchedule: boolean;
+  myId: string;
 }
 
 export function Timeline(props: TimelineProps) {
   const [days, setDays] = useState<TimelineEvent[] | null>(null);
 
   useEffect(() => {
-    setDays(parseEvents(props.day));
-  }, [props.day]);
+    setDays(parseEvents(props.day, props.viewingOwnSchedule, props.myId));
+  }, [props.day, props.viewingOwnSchedule, props.myId]);
 
   if (!days || !days.length) {
     return (
@@ -41,7 +43,11 @@ function EventComponent(
       {newLocation && (
         <div className="timeline_location">{timelineEvent.location}</div>
       )}
-      <div className="timeline_event">
+      <div
+        className={
+          "timeline_event" + (timelineEvent.meAlsoGoing ? " also-going" : "")
+        }
+      >
         <div className="timeline_artist">{timelineEvent.info.artist}</div>
         {/* <GoingWithComponent event={timelineEvent} /> */}
         <div className="timeline_time">
@@ -72,7 +78,7 @@ function padTime(timeUnit: number) {
   }
 }
 
-function parseEvents(day: Day) {
+function parseEvents(day: Day, viewingOwnSchedule: boolean, myId: string) {
   if (!day) {
     return null;
   }
@@ -88,6 +94,17 @@ function parseEvents(day: Day) {
       const start = Date.parse(event.timeStart);
       const end = Date.parse(event.timeEnd);
 
+      let meAlsoGoing = false;
+      if (!viewingOwnSchedule) {
+        const myAttendance = event.attendees.find(
+          (attendee) => attendee.id === myId
+        );
+        console.log(myAttendance);
+        if (myAttendance?.id) {
+          meAlsoGoing = true;
+        }
+      }
+
       const timelineEvent = {
         info: event,
         location: stageName,
@@ -95,6 +112,7 @@ function parseEvents(day: Day) {
         endTs: end,
         dayDate: dayDate,
         dayName: dayName,
+        meAlsoGoing: meAlsoGoing,
       };
 
       dayEvents.push(timelineEvent);
@@ -119,4 +137,5 @@ interface TimelineEvent {
   location: string;
   dayDate: number;
   dayName: string;
+  meAlsoGoing: boolean;
 }
