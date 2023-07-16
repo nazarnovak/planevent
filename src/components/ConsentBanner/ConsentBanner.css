@@ -1,0 +1,115 @@
+#consent-wrapper {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  background-color: #222;
+  box-sizing: border-box;
+  border: 3px solid white;
+  z-index: 15;
+  display: flex;
+  justify-content: space-between;
+  font-size: 24px;
+  line-height: 24px;
+  min-height: 100px;
+  background-image: url(/public/cookies.jpg);
+  background-size: 400px;
+  border-radius: 8px;
+}
+
+@media (min-width: 0px) and (max-width: 320px) {
+  #consent-wrapper {
+    font-size: 16px;
+    line-height: 16px;
+  }
+}
+
+@media (min-width: 321px) and (max-width: 655px) {
+  #consent-wrapper {
+    font-size: 16px;
+    line-height: 16px;
+  }
+}
+
+@media (min-width: 656px) and (max-width: 1023px) {
+  #consent-wrapper {
+    font-size: 20px;
+    line-height: 20px;
+  }
+}
+
+#consent-text {
+  padding: 16px;
+  flex: 8 1;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
+    1px 1px 0 #000;
+}
+
+@media (min-width: 0px) and (max-width: 320px) {
+  #consent-text {
+    padding: 8px;
+  }
+}
+
+@media (min-width: 321px) and (max-width: 655px) {
+  #consent-text {
+    padding: 8px;
+  }
+}
+
+@media (min-width: 656px) and (max-width: 1023px) {
+  #consent-text {
+    padding: 12px;
+  }
+}
+
+#consent-agree-wrapper {
+  flex: 1 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#consent-agree {
+  background-color: #006600;
+  border: 1px solid white;
+  color: white;
+  font-size: 24px;
+  line-height: 24px;
+  flex: 1 1;
+  padding: 8px 16px;
+  margin-right: 12px;
+  min-height: 60px;
+  white-space: nowrap;
+  border-radius: 8px;
+}
+
+@media (min-width: 0px) and (max-width: 320px) {
+  #consent-agree {
+    font-size: 16px;
+    line-height: 16px;
+    padding: 4px 16px;
+    margin-right: 8px;
+  }
+}
+
+@media (min-width: 321px) and (max-width: 655px) {
+  #consent-agree {
+    font-size: 16px;
+    line-height: 16px;
+    padding: 4px 16px;
+    margin-right: 8px;
+  }
+}
+
+@media (min-width: 656px) and (max-width: 1023px) {
+  #consent-agree {
+    font-size: 20px;
+    line-height: 20px;
+    padding: 8px 16px;
+    margin-right: 12px;
+  }
+}

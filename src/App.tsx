@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Artist, Schedule, ScheduleAPIResponse, User } from "./Dto";
 
+import { ConsentBanner } from "./components/ConsentBanner/ConsentBanner";
 import { Loader } from "./Loader";
 import { SharedTopButtons } from "./components/TopButtons/SharedTopButtons";
 
@@ -221,6 +222,7 @@ const App = () => {
 
   return (
     <div>
+      <ConsentBanner />
       <div id="top-buttons-container">
         {!sharedLineupID && (
           <MyTopButtons
