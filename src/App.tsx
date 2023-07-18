@@ -168,28 +168,36 @@ const App = () => {
     // We find stageKey and artistKey from the given slotid
     // This way we won't need the key provided to this function, and we can use this function
     // for both edit and view mode!
+    let selectedWeekKey = 0;
+    let selectedDayKey = 0;
     let selectedStageKey = 0;
     let selectedArtistKey = 0;
 
-    outer: for (const stageKey in tempSchedule[currentWeek]?.days[currentDay]
-      ?.stages) {
-      for (const artistKey in tempSchedule[currentWeek]?.days[currentDay]
-        ?.stages[stageKey].artists) {
-        if (
-          tempSchedule[currentWeek]?.days[currentDay]?.stages[stageKey]
-            ?.artists[artistKey].id !== slotId
-        )
-          continue;
-        selectedStageKey = +stageKey;
-        selectedArtistKey = +artistKey;
-        console.log(+stageKey + "-" + artistKey);
-        break outer;
+    outer: for (const weekKey in tempSchedule) {
+      for (const dayKey in tempSchedule[weekKey].days) {
+        for (const stageKey in tempSchedule[weekKey]?.days[dayKey]?.stages) {
+          for (const artistKey in tempSchedule[weekKey]?.days[dayKey]?.stages[
+            stageKey
+          ].artists) {
+            if (
+              tempSchedule[weekKey]?.days[dayKey]?.stages[stageKey]?.artists[
+                artistKey
+              ].id !== slotId
+            )
+              continue;
+            selectedWeekKey = +weekKey;
+            selectedDayKey = +dayKey;
+            selectedStageKey = +stageKey;
+            selectedArtistKey = +artistKey;
+            break outer;
+          }
+        }
       }
     }
 
-    tempSchedule[currentWeek].days[currentDay].stages[selectedStageKey].artists[
-      selectedArtistKey
-    ].attending = newAttendingStatus;
+    tempSchedule[selectedWeekKey].days[selectedDayKey].stages[
+      selectedStageKey
+    ].artists[selectedArtistKey].attending = newAttendingStatus;
 
     // Copy object without a reference
     const tempSchedule2 = JSON.parse(JSON.stringify(tempSchedule));
