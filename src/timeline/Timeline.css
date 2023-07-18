@@ -2,14 +2,31 @@
   margin-top: 16px;
 }
 
-.timeline_event {
+.timeline-item-wrapper {
   margin: 10px 20px 10px 20px;
-  padding: 10px;
   background-color: #faf9f8;
+  display: flex;
+  flex-direction: row;
+}
+
+.timeline_event {
+  flex: 8 1;
+  padding: 10px;
 }
 
 .timeline_event.also-going {
   background-color: #006600;
+}
+
+.followers-number {
+  padding: 10px;
+  flex: 1 1;
+  background: #333;
+  border: 1px solid white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 }
 
 .timeline_location {

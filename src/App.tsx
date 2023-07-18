@@ -30,7 +30,6 @@ const App = () => {
   const [allTodaysStages, setAllTodaysStages] = useState([] as string[]);
   const [stageModalOpen, setStageModalOpen] = useState(false);
 
-  const [modalArtistKey, setModalArtistKey] = useState(0);
   const [modalArtistInfo, setModalArtistInfo] = useState({} as Artist);
 
   const [schedule, setSchedule] = useState([] as Schedule[]);
@@ -160,29 +159,43 @@ const App = () => {
   };
 
   const updateAttendanceStatus = (
-    key: number,
     slotId: string,
     newAttendingStatus: boolean
   ) => {
-    // Weird hack to rewrite the schedule in state in the specific artist key :/
+    // Rewrite the schedule in state, so it shows new attendance status
     let tempSchedule = [...schedule];
-    if (
-      tempSchedule[currentWeek] &&
-      tempSchedule[currentWeek]?.days[currentDay] &&
-      tempSchedule[currentWeek]?.days[currentDay]?.stages[currentStage] &&
-      tempSchedule[currentWeek]?.days[currentDay]?.stages[currentStage].artists[
-        key
-      ]
-    ) {
-      tempSchedule[currentWeek].days[currentDay].stages[currentStage].artists[
-        key
-      ].attending = newAttendingStatus;
-      // Copy object without a reference
-      const tempSchedule2 = JSON.parse(JSON.stringify(tempSchedule));
 
-      setSchedule(tempSchedule);
-      setFilteredSchedule(filterSchedule(tempSchedule2));
+    // We find stageKey and artistKey from the given slotid
+    // This way we won't need the key provided to this function, and we can use this function
+    // for both edit and view mode!
+    let selectedStageKey = 0;
+    let selectedArtistKey = 0;
+
+    outer: for (const stageKey in tempSchedule[currentWeek]?.days[currentDay]
+      ?.stages) {
+      for (const artistKey in tempSchedule[currentWeek]?.days[currentDay]
+        ?.stages[stageKey].artists) {
+        if (
+          tempSchedule[currentWeek]?.days[currentDay]?.stages[stageKey]
+            ?.artists[artistKey].id !== slotId
+        )
+          continue;
+        selectedStageKey = +stageKey;
+        selectedArtistKey = +artistKey;
+        console.log(+stageKey + "-" + artistKey);
+        break outer;
+      }
     }
+
+    tempSchedule[currentWeek].days[currentDay].stages[selectedStageKey].artists[
+      selectedArtistKey
+    ].attending = newAttendingStatus;
+
+    // Copy object without a reference
+    const tempSchedule2 = JSON.parse(JSON.stringify(tempSchedule));
+
+    setSchedule(tempSchedule);
+    setFilteredSchedule(filterSchedule(tempSchedule2));
 
     fetch(
       "https://planevent.me/api/attend?eventId=" +
@@ -284,7 +297,6 @@ const App = () => {
         onClose={() => {
           // Hack to hide scrollbar
           document.body.style.overflow = "auto";
-          setModalArtistKey(0);
           setModalArtistInfo({} as Artist);
         }}
         handleChangeGoing={() => {
@@ -292,11 +304,9 @@ const App = () => {
           document.body.style.overflow = "auto";
 
           updateAttendanceStatus(
-            modalArtistKey,
             modalArtistInfo.id,
             !modalArtistInfo.attending
           );
-          setModalArtistKey(0);
           setModalArtistInfo({} as Artist);
         }}
         currentStage={
@@ -311,6 +321,9 @@ const App = () => {
           currentWeek={currentWeek}
           viewingOwnSchedule={me?.id !== "" && me.id === owner.id}
           myId={me?.id || ""}
+          handleFollowersClick={(artist: Artist) => {
+            setModalArtistInfo(artist);
+          }}
         />
       )}
       {!sharedLineupID && editMode && (
@@ -320,8 +333,7 @@ const App = () => {
               ?.artists || []
           }
           updateAttendanceStatus={updateAttendanceStatus}
-          handleFollowersClick={(i: number, artist: Artist) => {
-            setModalArtistKey(i);
+          handleFollowersClick={(artist: Artist) => {
             setModalArtistInfo(artist);
           }}
         />
@@ -453,8 +465,8 @@ const FollowingModal = (props: FollowingModalProps) => {
             : `People you follow going:`}
           <br />
           <ul>
-            {props.modalArtistInfo?.attendees?.map((attender) => {
-              return <li>{attender.name}</li>;
+            {props.modalArtistInfo?.attendees?.map((attender, i) => {
+              return <li key={i}>{attender.name}</li>;
             })}
           </ul>
         </div>
@@ -628,12 +640,8 @@ const DaySelector = (props: DaySelectorProps) => {
 
 interface TodaysScheduleProps {
   schedule: Artist[];
-  updateAttendanceStatus: (
-    key: number,
-    slotId: string,
-    newAttendingStatus: boolean
-  ) => void;
-  handleFollowersClick: (i: number, artist: Artist) => void;
+  updateAttendanceStatus: (slotId: string, newAttendingStatus: boolean) => void;
+  handleFollowersClick: (artist: Artist) => void;
 }
 
 const TodaysSchedule = (props: TodaysScheduleProps) => {
@@ -646,7 +654,7 @@ const TodaysSchedule = (props: TodaysScheduleProps) => {
         </div>
         <div className="timeslot-followers">Followers</div>
       </div>
-      {props.schedule.map((slot: Artist, i: number) => {
+      {props.schedule.map((slot: Artist) => {
         const hourStart = new Date(Date.parse(slot.timeStart));
         const hourEnd = new Date(Date.parse(slot.timeEnd));
 
@@ -670,7 +678,7 @@ const TodaysSchedule = (props: TodaysScheduleProps) => {
                 "timeslot-time-artist" + (slot.attending ? " attending" : "")
               }
               onClick={() =>
-                props.updateAttendanceStatus(i, slot.id, !slot.attending)
+                props.updateAttendanceStatus(slot.id, !slot.attending)
               }
             >
               <div className="timeslot-time">
@@ -687,7 +695,7 @@ const TodaysSchedule = (props: TodaysScheduleProps) => {
                   return null;
                 }
 
-                props.handleFollowersClick(i, slot);
+                props.handleFollowersClick(slot);
               }}
             >
               {slot.attendees.length}

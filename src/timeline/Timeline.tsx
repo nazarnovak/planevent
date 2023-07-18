@@ -9,6 +9,7 @@ interface TimelineProps {
   currentDay: number;
   viewingOwnSchedule: boolean;
   myId: string;
+  handleFollowersClick: (artist: Artist) => void;
 }
 
 export function Timeline(props: TimelineProps) {
@@ -28,14 +29,23 @@ export function Timeline(props: TimelineProps) {
 
   return (
     <div id="shared-timeline">
-      {days.map((e, i, es) => EventComponent(e, i === 0 ? null : es[i - 1]))}
+      {days.map((e, i, es) =>
+        EventComponent(
+          e,
+          i === 0 ? null : es[i - 1],
+          props.viewingOwnSchedule,
+          props.handleFollowersClick
+        )
+      )}
     </div>
   );
 }
 
 function EventComponent(
   timelineEvent: TimelineEvent,
-  previous: TimelineEvent | null = null
+  previous: TimelineEvent | null = null,
+  viewingOwnSchedule: boolean,
+  handleFollowersClick: (artist: Artist) => void
 ) {
   const newLocation = previous?.location !== timelineEvent.location;
   return (
@@ -43,16 +53,35 @@ function EventComponent(
       {newLocation && (
         <div className="timeline_location">{timelineEvent.location}</div>
       )}
-      <div
-        className={
-          "timeline_event" + (timelineEvent.meAlsoGoing ? " also-going" : "")
-        }
-      >
-        <div className="timeline_artist">{timelineEvent.info.artist}</div>
-        {/* <GoingWithComponent event={timelineEvent} /> */}
-        <div className="timeline_time">
-          {formatTime(timelineEvent.info.timeStart, timelineEvent.info.timeEnd)}
+      <div className="timeline-item-wrapper">
+        <div
+          className={
+            "timeline_event" + (timelineEvent.meAlsoGoing ? " also-going" : "")
+          }
+        >
+          <div className="timeline_artist">{timelineEvent.info.artist}</div>
+          {/* <GoingWithComponent event={timelineEvent} /> */}
+          <div className="timeline_time">
+            {formatTime(
+              timelineEvent.info.timeStart,
+              timelineEvent.info.timeEnd
+            )}
+          </div>
         </div>
+        {viewingOwnSchedule && (
+          <div
+            className="followers-number"
+            onClick={() => {
+              if (timelineEvent.info.attendees.length === 0) {
+                return null;
+              }
+
+              handleFollowersClick(timelineEvent.info);
+            }}
+          >
+            {timelineEvent.info.attendees.length}
+          </div>
+        )}
       </div>
     </React.Fragment>
   );
