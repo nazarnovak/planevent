@@ -33,7 +33,6 @@ const App = () => {
   const [modalArtistInfo, setModalArtistInfo] = useState({} as Artist);
 
   const [schedule, setSchedule] = useState([] as Schedule[]);
-  const [filteredSchedule, setFilteredSchedule] = useState([] as Schedule[]);
 
   const fetchLatestSchedule = (sharedLineupID: string) => {
     setLoading(true);
@@ -58,15 +57,9 @@ const App = () => {
           setTitle(data.me.name);
         }
 
-        // Copy object without a reference
-        const fetchedSchedule = JSON.parse(JSON.stringify(data.schedule));
-        const fetchedSchedule2 = JSON.parse(JSON.stringify(data.schedule));
-
         if (!sharedLineupID) {
-          setSchedule(fetchedSchedule);
+          setSchedule(data.schedule);
         }
-
-        setFilteredSchedule(filterSchedule(fetchedSchedule2));
 
         let allStageNames =
           data.schedule[currentWeek]?.days[currentDay]?.stages.map(
@@ -75,19 +68,6 @@ const App = () => {
         setAllTodaysStages(allStageNames);
       })
       .finally(() => setLoading(false));
-  };
-
-  const filterSchedule = (schedule: Schedule[]) => {
-    return schedule.filter((week) => {
-      week.days = week.days.filter((day) => {
-        day.stages = day.stages.filter((stage) => {
-          stage.artists = stage.artists.filter((artist) => artist.attending);
-          return stage.artists.length;
-        });
-        return day.stages.length;
-      });
-      return week.days.length;
-    });
   };
 
   const fetchSecret = () => {
@@ -132,6 +112,53 @@ const App = () => {
     fetchAPI();
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    if (editMode) return;
+
+    const changeWeekIfNeeded = () => {
+      const weeksAttending: number[] = [];
+
+      schedule.forEach((week, i) => {
+        const atLeastOneAttending = week.days.some((day) =>
+          day.stages.some((stage) =>
+            stage.artists.some((artist) => artist.attending)
+          )
+        );
+        if (atLeastOneAttending) {
+          weeksAttending.push(i);
+        }
+      });
+
+      if (!weeksAttending.length || weeksAttending.includes(currentWeek))
+        return;
+
+      setCurrentWeek(weeksAttending[0]);
+    };
+
+    const changeDayIfNeeded = () => {
+      const daysAttending: number[] = [];
+
+      schedule.forEach((week) => {
+        week.days.forEach((day, i) => {
+          const atLeastOneAttending = day.stages.some((stage) =>
+            stage.artists.some((artist) => artist.attending)
+          );
+          if (atLeastOneAttending) {
+            daysAttending.push(i);
+          }
+        });
+      });
+
+      if (!daysAttending.length || daysAttending.includes(currentDay)) return;
+
+      setCurrentDay(daysAttending[0]);
+    };
+
+    changeWeekIfNeeded();
+    changeDayIfNeeded();
+    // eslint-disable-next-line
+  }, [editMode]);
 
   const changeWeek = (changedWeek: number) => {
     setCurrentWeek(changedWeek);
@@ -199,11 +226,7 @@ const App = () => {
       selectedStageKey
     ].artists[selectedArtistKey].attending = newAttendingStatus;
 
-    // Copy object without a reference
-    const tempSchedule2 = JSON.parse(JSON.stringify(tempSchedule));
-
     setSchedule(tempSchedule);
-    setFilteredSchedule(filterSchedule(tempSchedule2));
 
     fetch(
       "https://planevent.me/api/attend?eventId=" +
@@ -289,7 +312,7 @@ const App = () => {
         }}
       />
       <DaySelector
-        schedule={!!sharedLineupID || !editMode ? filteredSchedule : schedule}
+        schedule={schedule}
         currentWeek={currentWeek}
         currentDay={currentDay}
         currentStage={currentStage}
@@ -324,7 +347,7 @@ const App = () => {
       />
       {(!!sharedLineupID || !editMode) && (
         <Timeline
-          day={filteredSchedule[currentWeek]?.days[currentDay]}
+          day={schedule[currentWeek]?.days[currentDay]}
           currentDay={currentDay}
           currentWeek={currentWeek}
           viewingOwnSchedule={me?.id !== "" && me.id === owner.id}
@@ -558,47 +581,45 @@ interface DaySelectorProps {
 }
 
 const DaySelector = (props: DaySelectorProps) => {
-  const [attendingWeeks, setAttendingWeeks] = useState([] as number[]);
-
-  useEffect(() => {
-    outer: for (let week of props.schedule) {
-      for (let day of week.days) {
-        for (let stages of day.stages) {
-          for (let artist of stages.artists) {
-            if (artist.attending) {
-              setAttendingWeeks([...attendingWeeks, week.weekNumber]);
-              break outer;
-            }
-          }
-        }
-      }
-    }
-    // eslint-disable-next-line
-  }, []);
-
   return (
     <div>
       <div id="week-selector">
-        {props.schedule.map((slot, i) => {
+        {props.schedule.map((week, i) => {
+          if (!props.editMode) {
+            const atLeastOneAttending = week.days.some((day) =>
+              day.stages.some((stage) =>
+                stage.artists.some((artist) => artist.attending)
+              )
+            );
+            if (!atLeastOneAttending) {
+              return null;
+            }
+          }
           return (
             <div
               key={i}
-              style={{
-                display: attendingWeeks.includes(i) ? "block" : "block",
-              }}
               className={
                 `week-day-stage-item week` +
                 (i === props.currentWeek ? " active" : "")
               }
               onClick={() => props.changeWeek(i)}
             >
-              {slot.weekName}
+              {week.weekName}
             </div>
           );
         })}
       </div>
       <div id="day-selector">
-        {props.schedule[props.currentWeek]?.days.map((slot, i) => {
+        {props.schedule[props.currentWeek]?.days.map((day, i) => {
+          if (!props.editMode) {
+            const atLeastOneAttending = day.stages.some((stage) =>
+              stage.artists.some((artist) => artist.attending)
+            );
+            if (!atLeastOneAttending) {
+              return null;
+            }
+          }
+
           return (
             <div
               key={i}
@@ -608,7 +629,7 @@ const DaySelector = (props: DaySelectorProps) => {
               }
               onClick={() => props.changeDay(i)}
             >
-              {slot.weekDay}
+              {day.weekDay}
             </div>
           );
         })}
