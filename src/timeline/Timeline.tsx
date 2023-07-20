@@ -22,7 +22,9 @@ export function Timeline(props: TimelineProps) {
   if (!days || !days.length) {
     return (
       <div className="not-going-today">
-        Not going to any artists on this day
+        {props.viewingOwnSchedule
+          ? "You didn't choose a lineup yet"
+          : "This user didn't choose a lineup yet"}
       </div>
     );
   }
