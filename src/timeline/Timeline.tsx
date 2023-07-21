@@ -50,12 +50,28 @@ function EventComponent(
   handleFollowersClick: (artist: Artist) => void
 ) {
   const newLocation = previous?.location !== timelineEvent.location;
+
+  const addHours = (date: Date, hours: number) => {
+    date.setHours(date.getHours() + hours);
+
+    return date;
+  };
+
+  const nowInBelgium = addHours(new Date(), 2);
+
   return (
     <React.Fragment key={timelineEvent.info.id}>
       {newLocation && (
         <div className="timeline_location">{timelineEvent.location}</div>
       )}
-      <div className="timeline-item-wrapper">
+      <div
+        className={
+          "timeline-item-wrapper" +
+          (viewingOwnSchedule && nowInBelgium > new Date(timelineEvent.end)
+            ? " expired"
+            : "")
+        }
+      >
         <div
           className={
             "timeline_event" + (timelineEvent.meAlsoGoing ? " also-going" : "")
@@ -141,6 +157,7 @@ function parseEvents(day: Day, viewingOwnSchedule: boolean, myId: string) {
         location: stageName,
         startTs: start,
         endTs: end,
+        end: event.timeEnd,
         dayDate: dayDate,
         dayName: dayName,
         meAlsoGoing: meAlsoGoing,
@@ -165,6 +182,7 @@ interface TimelineEvent {
   info: Artist;
   startTs: number;
   endTs: number;
+  end: string;
   location: string;
   dayDate: number;
   dayName: string;

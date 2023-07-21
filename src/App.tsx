@@ -57,9 +57,7 @@ const App = () => {
           setTitle(data.me.name);
         }
 
-        if (!sharedLineupID) {
-          setSchedule(data.schedule);
-        }
+        setSchedule(data.schedule);
 
         let allStageNames =
           data.schedule[currentWeek]?.days[currentDay]?.stages.map(
@@ -585,7 +583,7 @@ const DaySelector = (props: DaySelectorProps) => {
     <div>
       <div id="week-selector">
         {props.schedule.map((week, i) => {
-          if (!props.editMode) {
+          if (props.sharedLineup || !props.editMode) {
             const atLeastOneAttending = week.days.some((day) =>
               day.stages.some((stage) =>
                 stage.artists.some((artist) => artist.attending)
@@ -611,7 +609,7 @@ const DaySelector = (props: DaySelectorProps) => {
       </div>
       <div id="day-selector">
         {props.schedule[props.currentWeek]?.days.map((day, i) => {
-          if (!props.editMode) {
+          if (props.sharedLineup || !props.editMode) {
             const atLeastOneAttending = day.stages.some((stage) =>
               stage.artists.some((artist) => artist.attending)
             );
