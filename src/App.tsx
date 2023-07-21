@@ -112,7 +112,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    if (editMode) return;
+    if (!sharedLineupID && editMode) return;
 
     const changeWeekIfNeeded = () => {
       const weeksAttending: number[] = [];
@@ -156,7 +156,7 @@ const App = () => {
     changeWeekIfNeeded();
     changeDayIfNeeded();
     // eslint-disable-next-line
-  }, [editMode]);
+  }, [editMode, sharedLineupID, schedule]);
 
   const changeWeek = (changedWeek: number) => {
     setCurrentWeek(changedWeek);
