@@ -13,6 +13,7 @@ export const FeedbackModal = (props: FeedbackModalProps) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (props.modalOpen) {
@@ -29,6 +30,8 @@ export const FeedbackModal = (props: FeedbackModalProps) => {
       return;
     }
 
+    setLoading(true);
+
     fetch("https://planevent.me/api/contact", {
       method: "POST",
       credentials: "include",
@@ -40,6 +43,7 @@ export const FeedbackModal = (props: FeedbackModalProps) => {
           throw new Error("Something went wrong when submitting contact us");
       })
       .finally(() => {
+        setLoading(false);
         props.setFeedbackSubmitted();
       });
   };
@@ -117,12 +121,12 @@ export const FeedbackModal = (props: FeedbackModalProps) => {
         </div>
         <div
           id="share-feedback"
-          className={"modal-footer" + (message ? "" : " disabled")}
+          className={"modal-footer" + (message && !loading ? "" : " disabled")}
           onClick={() => {
             handleSend();
           }}
         >
-          Share feedback
+          {loading ? "Sending..." : "Share feedback"}
         </div>
       </div>
     </div>
