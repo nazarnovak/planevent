@@ -31,7 +31,7 @@ const App = () => {
   const [title, setTitle] = useState("Your name");
 
   const [currentWeek, setCurrentWeek] = useState(0);
-  const [currentDay, setCurrentDay] = useState(0);
+  const [currentDay, setCurrentDay] = useState(2);
   const [currentStage, setCurrentStage] = useState(0);
 
   const [allTodaysStages, setAllTodaysStages] = useState([] as string[]);
