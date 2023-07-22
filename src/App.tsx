@@ -306,6 +306,9 @@ const App = () => {
             setContactUsModalOpen(false);
           }}
           setFeedbackSubmitted={async () => {
+            // Hack to hide scrollbar
+            document.body.style.overflow = "auto";
+
             setContactUsModalOpen(false);
             setContactUsSubmittedSuccess(true);
             await timeout(2000);
