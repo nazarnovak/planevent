@@ -147,7 +147,7 @@ export const MyTopButtons = (props: Props) => {
             </>
           )}
           {!props.showShareError && linkCopiedSuccess && (
-            <SuccessButton text="Link copied to clipboard" />
+            <SuccessButton text="Copied to clipboard" />
           )}
         </div>
         <ToggleLineupView
