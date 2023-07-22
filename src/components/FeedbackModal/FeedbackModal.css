@@ -1,0 +1,73 @@
+#contact-us-modal-body {
+  padding: 32px;
+  font-size: 24px;
+  line-height: 24px;
+  overflow: hidden;
+  overflow-y: scroll;
+  text-align: justify;
+}
+
+@media (min-width: 0px) and (max-width: 320px) {
+  .modal-body {
+    padding: 16px;
+  }
+}
+
+@media (min-width: 321px) and (max-width: 655px) {
+  .modal-body {
+    padding: 16px;
+  }
+}
+
+#contact-us-modal-body a {
+  color: #66f;
+}
+
+#contact-us-inputs {
+  margin-top: 32px;
+  margin-bottom: 24px;
+}
+
+#contact-us-modal-body input,
+#contact-us-modal-body textarea {
+  background-color: #222;
+  font-size: 24px;
+  line-height: 24px;
+  outline: none;
+  width: calc(100% - 16px);
+  border: 1px solid #777;
+  border-radius: 5px;
+  margin-top: 24px;
+  padding: 8px;
+  font-family: europa, sans-serif;
+  text-align: justify;
+  resize: none;
+}
+
+#contact-us-modal-body input::placeholder,
+#contact-us-modal-body textarea::placeholder {
+  color: #aaa;
+  text-align: justify;
+}
+
+#contact-name {
+  display: block;
+}
+
+#contact-email {
+  display: block;
+}
+
+#contact-message {
+  display: block;
+}
+
+#share-feedback {
+  border-top: 1px solid white;
+  background-color: #554cc7;
+}
+
+#share-feedback.disabled {
+  background-color: #666;
+  cursor: default;
+}

@@ -7,6 +7,7 @@ import { SharedTopButtons } from "./components/TopButtons/SharedTopButtons";
 
 import { Timeline } from "./timeline/Timeline";
 
+import { FeedbackModal } from "./components/FeedbackModal/FeedbackModal";
 import { MyTopButtons } from "./components/TopButtons/MyTopButtons";
 
 import X from "./images/x.svg";
@@ -18,9 +19,15 @@ const App = () => {
 
   const [secretId, setSecretId] = useState("");
   const [sharedLineupID, setSharedLineupID] = useState("");
-  const [editMode, setEditMode] = useState(true);
+  const [shareOverlayOpen, setShareOverlayOpen] = useState(false);
 
+  const [editMode, setEditMode] = useState(true);
   const [showShareError, setShowShareError] = useState(false);
+
+  const [contactUsSubmittedSuccess, setContactUsSubmittedSuccess] =
+    useState(false);
+  const [contactUsModalOpen, setContactUsModalOpen] = useState(false);
+
   const [title, setTitle] = useState("Your name");
 
   const [currentWeek, setCurrentWeek] = useState(0);
@@ -158,6 +165,19 @@ const App = () => {
     // eslint-disable-next-line
   }, [editMode, sharedLineupID, schedule]);
 
+  useEffect(() => {
+    if (!shareOverlayOpen) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setShareOverlayOpen(false);
+    }, 7000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [shareOverlayOpen]);
+
   const changeWeek = (changedWeek: number) => {
     setCurrentWeek(changedWeek);
   };
@@ -258,115 +278,156 @@ const App = () => {
     setStageModalOpen(true);
   };
 
+  function timeout(delay: number) {
+    return new Promise((res) => setTimeout(res, delay));
+  }
+
   if (loading) {
     return <Loader />;
   }
 
+  // Double wrapper is needed to be able to click anywhere and remove the shared button overlay :shrug:
   return (
-    <div>
-      <ConsentBanner />
-      <div id="top-buttons-container">
-        {!sharedLineupID && (
-          <MyTopButtons
-            secretId={secretId}
-            shareId={me.id}
-            title={title}
-            showShareError={showShareError}
-            setShowShareError={setShowShareError}
-            editMode={editMode}
-            handleLineupToggleClick={() => setEditMode(!editMode)}
-          />
-        )}
-        {sharedLineupID && (
-          <SharedTopButtons
-            sharedLineupID={sharedLineupID}
-            following={!!me.following.find((id) => id === owner.id)}
-            viewingOwnSchedule={me?.id !== "" && me.id === owner.id}
-          />
-        )}
-      </div>
-      <div id="title-and-edit-button">
-        <Title
-          warningFont={showShareError}
-          title={title}
-          handleTitleChange={handleTitleChange}
-          sharedSchedule={!!sharedLineupID}
-        />
-      </div>
-      <StageModal
-        stageModalOpen={stageModalOpen}
-        currentStage={currentStage}
-        allTodaysStages={allTodaysStages}
-        onClose={() => {
-          // Hack to hide scrollbar
-          document.body.style.overflow = "auto";
-          setStageModalOpen(false);
-        }}
-        handleStageClick={(stageNumber: number) => {
-          // Hack to hide scrollbar
-          document.body.style.overflow = "auto";
-          setCurrentStage(stageNumber);
-          setStageModalOpen(false);
-        }}
-      />
-      <DaySelector
-        schedule={schedule}
-        currentWeek={currentWeek}
-        currentDay={currentDay}
-        currentStage={currentStage}
-        changeWeek={changeWeek}
-        changeDay={changeDay}
-        changeStage={changeStage}
-        sharedLineup={!!sharedLineupID}
-        handleStageClick={handleStageClick}
-        editMode={editMode}
-      />
-      <FollowingModal
-        modalArtistInfo={modalArtistInfo}
-        onClose={() => {
-          // Hack to hide scrollbar
-          document.body.style.overflow = "auto";
-          setModalArtistInfo({} as Artist);
-        }}
-        handleChangeGoing={() => {
-          // Hack to hide scrollbar
-          document.body.style.overflow = "auto";
-
-          updateAttendanceStatus(
-            modalArtistInfo.id,
-            !modalArtistInfo.attending
-          );
-          setModalArtistInfo({} as Artist);
-        }}
-        currentStage={
-          schedule[currentWeek]?.days[currentDay]?.stages[currentStage]
-            ?.stage || ""
+    <div
+      id="wrapper-outer"
+      onClick={(e) => {
+        if (shareOverlayOpen) {
+          setShareOverlayOpen(false);
         }
-      />
-      {(!!sharedLineupID || !editMode) && (
-        <Timeline
-          day={schedule[currentWeek]?.days[currentDay]}
-          currentDay={currentDay}
+      }}
+    >
+      <div id="wrapper-inner">
+        <ConsentBanner />
+        <FeedbackModal
+          modalOpen={contactUsModalOpen}
+          onClose={() => {
+            // Hack to hide scrollbar
+            document.body.style.overflow = "auto";
+            setContactUsModalOpen(false);
+          }}
+          setFeedbackSubmitted={async () => {
+            setContactUsModalOpen(false);
+            setContactUsSubmittedSuccess(true);
+            await timeout(2000);
+            setContactUsSubmittedSuccess(false);
+          }}
+        />
+        <div id="top-buttons-container">
+          {!sharedLineupID && (
+            <MyTopButtons
+              secretId={secretId}
+              shareId={me.id}
+              title={title}
+              showShareError={showShareError}
+              setShowShareError={setShowShareError}
+              editMode={editMode}
+              handleLineupToggleClick={() => setEditMode(!editMode)}
+              closeShareOverlayOpen={() => setShareOverlayOpen(false)}
+              shareOverlayOpen={shareOverlayOpen}
+              handleMoveShareClick={() => setShareOverlayOpen(true)}
+              contactUsSubmittedSuccess={contactUsSubmittedSuccess}
+              handleContactUs={() => {
+                setContactUsModalOpen(true);
+              }}
+              contactUsModalOpen={contactUsModalOpen}
+            />
+          )}
+          {sharedLineupID && (
+            <SharedTopButtons
+              sharedLineupID={sharedLineupID}
+              following={!!me.following.find((id) => id === owner.id)}
+              viewingOwnSchedule={me?.id !== "" && me.id === owner.id}
+              contactUsSubmittedSuccess={contactUsSubmittedSuccess}
+              handleContactUs={() => {
+                setContactUsModalOpen(true);
+              }}
+              contactUsModalOpen={contactUsModalOpen}
+            />
+          )}
+        </div>
+        <div id="title-and-edit-button">
+          <Title
+            warningFont={showShareError}
+            title={title}
+            handleTitleChange={handleTitleChange}
+            sharedSchedule={!!sharedLineupID}
+          />
+        </div>
+        <StageModal
+          stageModalOpen={stageModalOpen}
+          currentStage={currentStage}
+          allTodaysStages={allTodaysStages}
+          onClose={() => {
+            // Hack to hide scrollbar
+            document.body.style.overflow = "auto";
+            setStageModalOpen(false);
+          }}
+          handleStageClick={(stageNumber: number) => {
+            // Hack to hide scrollbar
+            document.body.style.overflow = "auto";
+            setCurrentStage(stageNumber);
+            setStageModalOpen(false);
+          }}
+        />
+        <DaySelector
+          schedule={schedule}
           currentWeek={currentWeek}
-          viewingOwnSchedule={me?.id !== "" && me.id === owner.id}
-          myId={me?.id || ""}
-          handleFollowersClick={(artist: Artist) => {
-            setModalArtistInfo(artist);
-          }}
+          currentDay={currentDay}
+          currentStage={currentStage}
+          changeWeek={changeWeek}
+          changeDay={changeDay}
+          changeStage={changeStage}
+          sharedLineup={!!sharedLineupID}
+          handleStageClick={handleStageClick}
+          editMode={editMode}
         />
-      )}
-      {!sharedLineupID && editMode && (
-        <TodaysSchedule
-          schedule={
+        <FollowingModal
+          modalArtistInfo={modalArtistInfo}
+          onClose={() => {
+            // Hack to hide scrollbar
+            document.body.style.overflow = "auto";
+            setModalArtistInfo({} as Artist);
+          }}
+          handleChangeGoing={() => {
+            // Hack to hide scrollbar
+            document.body.style.overflow = "auto";
+
+            updateAttendanceStatus(
+              modalArtistInfo.id,
+              !modalArtistInfo.attending
+            );
+            setModalArtistInfo({} as Artist);
+          }}
+          currentStage={
             schedule[currentWeek]?.days[currentDay]?.stages[currentStage]
-              ?.artists || []
+              ?.stage || ""
           }
-          updateAttendanceStatus={updateAttendanceStatus}
-          handleFollowersClick={(artist: Artist) => {
-            setModalArtistInfo(artist);
-          }}
         />
-      )}
+        {(!!sharedLineupID || !editMode) && (
+          <Timeline
+            day={schedule[currentWeek]?.days[currentDay]}
+            currentDay={currentDay}
+            currentWeek={currentWeek}
+            viewingOwnSchedule={me?.id !== "" && me.id === owner.id}
+            myId={me?.id || ""}
+            handleFollowersClick={(artist: Artist) => {
+              setModalArtistInfo(artist);
+            }}
+          />
+        )}
+        {!sharedLineupID && editMode && (
+          <TodaysSchedule
+            schedule={
+              schedule[currentWeek]?.days[currentDay]?.stages[currentStage]
+                ?.artists || []
+            }
+            updateAttendanceStatus={updateAttendanceStatus}
+            handleFollowersClick={(artist: Artist) => {
+              setModalArtistInfo(artist);
+            }}
+          />
+        )}
+      </div>
     </div>
   );
 };

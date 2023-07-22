@@ -1,11 +1,15 @@
-export const SuccessButton = () => {
+interface SuccessButtonProps {
+  text: string;
+}
+
+export const SuccessButton = (props: SuccessButtonProps) => {
   return (
     <>
-      <button className="success-checkmark-button button-green">
-        <img src="/checkmark.png" alt="Copied to clipboard" />
+      <button className="button-green">
+        <img src="/checkmark.png" alt={props.text} />
       </button>
       <div className="top-button-description text-green">
-        Link copied to clipboard
+        {props.text}
         <br />
       </div>
     </>

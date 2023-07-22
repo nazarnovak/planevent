@@ -1,21 +1,25 @@
 import { useState } from "react";
 
 import { SuccessButton } from "./SuccessButton/SuccessButton";
-import { DonateButton } from "./DonateButton/DonateButton";
 
 interface Props {
   secretId: string;
   shareId: string;
   title: string;
   showShareError: boolean;
+  shareOverlayOpen: boolean;
+  closeShareOverlayOpen: () => void;
+  handleMoveShareClick: () => void;
   setShowShareError: (show: boolean) => void;
   editMode: boolean;
   handleLineupToggleClick: () => void;
+  contactUsSubmittedSuccess: boolean;
+  handleContactUs: () => void;
+  contactUsModalOpen: boolean;
 }
 
 export const MyTopButtons = (props: Props) => {
-  const [showMovedSuccess, setShowMovedSuccess] = useState(false);
-  const [showSharedSuccess, setSharedSuccess] = useState(false);
+  const [linkCopiedSuccess, setLinkCopiedSuccess] = useState(false);
 
   function timeout(delay: number) {
     return new Promise((res) => setTimeout(res, delay));
@@ -42,9 +46,10 @@ export const MyTopButtons = (props: Props) => {
 
     navigator.clipboard.writeText(url);
 
-    setShowMovedSuccess(true);
+    props.closeShareOverlayOpen();
+    setLinkCopiedSuccess(true);
     await timeout(2000);
-    setShowMovedSuccess(false);
+    setLinkCopiedSuccess(false);
   };
 
   const handleShareLineup = async () => {
@@ -73,16 +78,17 @@ export const MyTopButtons = (props: Props) => {
 
     navigator.clipboard.writeText(url);
 
-    setSharedSuccess(true);
+    props.closeShareOverlayOpen();
+    setLinkCopiedSuccess(true);
     await timeout(2000);
-    setSharedSuccess(false);
+    setLinkCopiedSuccess(false);
   };
 
   return (
-    <div id="top-buttons">
-      <div className="top-button-container">
-        {!showMovedSuccess && (
-          <>
+    <>
+      {props.shareOverlayOpen && (
+        <div id="share-buttons-overlay">
+          <div className="top-button-container">
             <button
               id="move-lineup"
               className="button-black"
@@ -93,23 +99,8 @@ export const MyTopButtons = (props: Props) => {
             <div className="top-button-description">
               Move lineup to a new device
             </div>
-          </>
-        )}
-        {showMovedSuccess && <SuccessButton />}
-      </div>
-      <div className="top-button-container">
-        {props.showShareError && (
-          <>
-            <button id="share-error" className="button-orange">
-              <img src="/exclamation.png" alt="Please enter your name" />
-            </button>
-            <div className="top-button-description text-orange">
-              Please enter your name
-            </div>
-          </>
-        )}
-        {!props.showShareError && !showSharedSuccess && (
-          <>
+          </div>
+          <div className="top-button-container">
             <button
               id="share-lineup"
               className="button-black"
@@ -120,16 +111,77 @@ export const MyTopButtons = (props: Props) => {
             <div className="top-button-description">
               Share lineup with others
             </div>
-          </>
-        )}
-        {!props.showShareError && showSharedSuccess && <SuccessButton />}
+          </div>
+        </div>
+      )}
+      <div id="top-buttons" className={props.shareOverlayOpen ? "tinted" : ""}>
+        <div className="top-button-container">
+          {props.showShareError && (
+            <>
+              <button id="share-error" className="button-orange">
+                <img src="/exclamation.png" alt="Please enter your name" />
+              </button>
+              <div className="top-button-description text-orange">
+                Please enter your name
+              </div>
+            </>
+          )}
+          {!props.showShareError && !linkCopiedSuccess && (
+            <>
+              <button
+                className={
+                  props.shareOverlayOpen ? "button-white" : "button-black"
+                }
+                onClick={props.handleMoveShareClick}
+              >
+                <img
+                  src={
+                    props.shareOverlayOpen
+                      ? "/chain-black.png"
+                      : "/chain-white.png"
+                  }
+                  alt="move/share lineup"
+                />
+              </button>
+              <div className="top-button-description">Move/share lineup</div>
+            </>
+          )}
+          {!props.showShareError && linkCopiedSuccess && (
+            <SuccessButton text="Link copied to clipboard" />
+          )}
+        </div>
+        <ToggleLineupView
+          editMode={props.editMode}
+          handleLineupToggleClick={props.handleLineupToggleClick}
+        />
+        <div className="top-button-container">
+          {!props.contactUsSubmittedSuccess && (
+            <>
+              <button
+                id="contact-us"
+                className={
+                  props.contactUsModalOpen ? "button-white" : "button-black"
+                }
+                onClick={props.handleContactUs}
+              >
+                <img
+                  src={
+                    props.contactUsModalOpen
+                      ? "/contact-us-black.png"
+                      : "/contact-us-white.png"
+                  }
+                  alt="Contact us"
+                />
+              </button>
+              <div className="top-button-description">Contact us</div>
+            </>
+          )}
+          {props.contactUsSubmittedSuccess && (
+            <SuccessButton text="Thank you for your feedback" />
+          )}
+        </div>
       </div>
-      <ToggleLineupView
-        editMode={props.editMode}
-        handleLineupToggleClick={props.handleLineupToggleClick}
-      />
-      <DonateButton />
-    </div>
+    </>
   );
 };
 

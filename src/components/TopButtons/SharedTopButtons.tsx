@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
 
-import { DonateButton } from "./DonateButton/DonateButton";
+import { SuccessButton } from "./SuccessButton/SuccessButton";
 
 interface Props {
   sharedLineupID: string;
   following: boolean;
   viewingOwnSchedule: boolean;
+  contactUsSubmittedSuccess: boolean;
+  handleContactUs: () => void;
+  contactUsModalOpen: boolean;
 }
 
 export const SharedTopButtons = (props: Props) => {
@@ -28,8 +31,6 @@ export const SharedTopButtons = (props: Props) => {
     }
     window.location.href = url;
   };
-
-  // TODO: How to see if I follow this person or not the first time I load this page?
 
   const handleFollowLineup = (follow: boolean) => {
     let url =
@@ -98,7 +99,32 @@ export const SharedTopButtons = (props: Props) => {
             )}
           </div>
         )}
-        <DonateButton />
+        <div className="top-button-container">
+          {!props.contactUsSubmittedSuccess && (
+            <>
+              <button
+                id="contact-us"
+                className={
+                  props.contactUsModalOpen ? "button-white" : "button-black"
+                }
+                onClick={props.handleContactUs}
+              >
+                <img
+                  src={
+                    props.contactUsModalOpen
+                      ? "/contact-us-black.png"
+                      : "/contact-us-white.png"
+                  }
+                  alt="Contact us"
+                />
+              </button>
+              <div className="top-button-description">Contact us</div>
+            </>
+          )}
+          {props.contactUsSubmittedSuccess && (
+            <SuccessButton text="Thank you for your feedback" />
+          )}
+        </div>
       </div>
     </div>
   );
